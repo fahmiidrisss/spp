@@ -46,6 +46,6 @@ class AuthController extends Controller
 
     public function tesApi()
     {
-        return "tes API";
+        return "ini tes API";
     }
 }
