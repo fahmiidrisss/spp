@@ -25,7 +25,7 @@ Route::group(['middleware'=>'auth:sanctum'], function()
 {
     //Kelola Data Admin
     Route::post('/admin/create', [AdminController::class, 'createAdmin']);
-    Route::get('/admin/show', [AdminController::class, 'showAdmin']);
+    
     Route::put('/admin/update/{id}', [AdminController::class, 'updateAdmin']);
     Route::delete('/admin/delete/{id}', [AdminController::class, 'deleteAdmin']);
     
@@ -46,3 +46,5 @@ Route::post('/login', [AuthController::class, 'login']);
 
 //Tes
 Route::get('/tes', [AuthController::class, 'tesApi']);
+
+Route::get('/admin/show', [AdminController::class, 'showAdmin']);
