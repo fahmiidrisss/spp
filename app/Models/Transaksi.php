@@ -9,6 +9,7 @@ class Transaksi extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id_transaksi';
+    public $timestamps = false;
 
     protected $fillable = [
         'nis',
