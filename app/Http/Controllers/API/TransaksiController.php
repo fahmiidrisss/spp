@@ -38,4 +38,9 @@ class TransaksiController extends Controller
             'data_transaksi' => $transaksi
         ], 200);
     }
+
+    public function index()
+    {
+        return "Ini Controller Transaksi";
+    }
 }
