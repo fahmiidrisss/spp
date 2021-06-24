@@ -16,7 +16,6 @@ class Transaksi extends Model
         'spp',
         'infaq',
         'status_transaksi',
-        'id_admin',
-        'tanggal_transaksi'
+        'id_admin'
     ];
 }

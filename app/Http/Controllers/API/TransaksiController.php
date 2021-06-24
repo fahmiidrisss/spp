@@ -16,8 +16,7 @@ class TransaksiController extends Controller
             'spp'               => 'required',
             'infaq'             => 'required',
             'status_transaksi'  => 'required',
-            'id_admin'          => 'required',
-            'tanggal_transaksi' => 'required'  
+            'id_admin'          => 'required'
         ]);
 
         // dd($request->all());
