@@ -47,4 +47,4 @@ Route::put('/santri/update/{id}', [SantriController::class, 'updateSantri']);
 Route::delete('/santri/delete/{id}', [SantriController::class, 'deleteSantri']);
 
 //Transaksi
-Route::post('/transaksi/create', [TransaksiController::class, 'createTransaksi']);
+Route::post('/transaksi/create/{jumlah_bulan}', [TransaksiController::class, 'createTransaksi']);
