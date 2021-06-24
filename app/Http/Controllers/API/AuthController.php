@@ -39,8 +39,13 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function tes()
+    public function tesWeb()
     {
-        return "tes";
+        return "tes Web";
+    }
+
+    public function tesApi()
+    {
+        return "tes API";
     }
 }

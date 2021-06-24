@@ -45,4 +45,4 @@ Route::group(['middleware'=>'auth:sanctum'], function()
 Route::post('/login', [AuthController::class, 'login']);
 
 //Tes
-Route::get('/tes', [AuthController::class, 'tes']);
+Route::get('/tes', [AuthController::class, 'tesWeb']);
