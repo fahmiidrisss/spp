@@ -45,3 +45,6 @@ Route::get('/santri/show', [SantriController::class, 'showSantri']);
 Route::get('/santri/detail/{id}', [SantriController::class, 'detailSantri']);
 Route::put('/santri/update/{id}', [SantriController::class, 'updateSantri']);
 Route::delete('/santri/delete/{id}', [SantriController::class, 'deleteSantri']);
+
+//Transaksi
+Route::post('/transaksi/create', [TransaksiController::class, 'createTransaksi']);
