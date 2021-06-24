@@ -16,6 +16,8 @@ class Transaksi extends Model
         'spp',
         'infaq',
         'status_transaksi',
-        'id_admin'
+        'id_admin',
+        'updated_at',
+        'created_at'
     ];
 }
