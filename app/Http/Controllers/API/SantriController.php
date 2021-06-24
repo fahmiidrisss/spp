@@ -97,4 +97,13 @@ class SantriController extends Controller
             'data_santri' => $santri
         ], 200);
     }
+
+    public function deleteSantri($nis)
+    {
+        $santri = Santri::find($nis)->delete();
+
+        return response()->json([
+            'message' => 'Data Santri Berhasil Dihapus'
+        ], 200);
+    }
 }
