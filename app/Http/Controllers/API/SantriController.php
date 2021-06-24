@@ -106,4 +106,14 @@ class SantriController extends Controller
             'message' => 'Data Santri Berhasil Dihapus'
         ], 200);
     }
+
+    public function detailSantri($nis)
+    {
+        $santri = Santri::find($nis);
+
+        return response()->json([
+            'message'   => 'Detail Santri Berhasil Ditampilkan',
+            'santri'    => $santri
+        ], 200);
+    }
 }
