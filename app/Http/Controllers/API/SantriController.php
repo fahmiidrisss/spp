@@ -89,7 +89,7 @@ class SantriController extends Controller
             'jenis_kelamin'     => $request->jenis_kelamin,
             'subsidi'           => $request->subsidi,
             'jumlah_tunggakan'  => $request->jumlah_tunggakan,
-            'id_kelas'        => $request->nama_kelas
+            'id_kelas'          => $request->nama_kelas
         ]);
 
         return response()->json([
