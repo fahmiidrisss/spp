@@ -38,4 +38,9 @@ class AuthController extends Controller
             'message' => 'Berhasil Logout'
         ], 200);
     }
+
+    public function tes()
+    {
+        return "tes";
+    }
 }
