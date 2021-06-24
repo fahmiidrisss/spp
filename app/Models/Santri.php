@@ -10,7 +10,6 @@ class Santri extends Model
     use HasFactory;
     public $timestamps = false;
     protected $primaryKey = 'nis';
-    public $table = "santri";
 
     protected $fillable = [
         'nis',
@@ -22,6 +21,6 @@ class Santri extends Model
         'jenis_kelamin',
         'subsidi',
         'jumlah_tunggakan',
-        'id_kelas',
+        'id_kelas'
     ];
 }
