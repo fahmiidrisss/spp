@@ -15,7 +15,6 @@ class TransaksiController extends Controller
             'total_transaksi'   => 'required',
             'spp'               => 'required',
             'infaq'             => 'required',
-            'status_transaksi'  => 'required',
             'id_admin'          => 'required'
         ]);
 
@@ -25,9 +24,9 @@ class TransaksiController extends Controller
         $transaksi->total_transaksi = $request->total_transaksi;
         $transaksi->spp = $request->spp;
         $transaksi->infaq = $request->infaq;
-        $transaksi->status_transaksi = $request->status_transaksi;
+        $transaksi->status_transaksi = "Tunai";
         $transaksi->id_admin = $request->id_admin;
-        for($i = 1; $i <= $jumlah_bulan; $i++)
+        for($i = 0; $i < $jumlah_bulan; $i++)
         {
             $transaksi->save();
         }
