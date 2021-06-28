@@ -48,7 +48,7 @@ class SantriController extends Controller
         ], 200);
     }
 
-    public function showSantri()
+    public function getSantri()
     {
         $santri = Santri::all();
 

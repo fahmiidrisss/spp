@@ -31,7 +31,7 @@ class AdminController extends Controller
         ], 200);
     }
 
-    public function showAdmin()
+    public function getAdmin()
     {
         $admin = Admin::all();;
 
