@@ -45,6 +45,7 @@ class TransaksiController extends Controller
 
         return response()->json([
             'message'           => 'Transaksi Berhasil',
+            'id_transaksi'      => $transaksi->id_transaksi,
             'nis'               => $transaksi->nis,
             'total_bayar'       => $total_transaksi,
             'status_transaksi'  => $transaksi->status_transaksi,
