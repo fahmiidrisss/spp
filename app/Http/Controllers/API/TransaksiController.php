@@ -29,14 +29,18 @@ class TransaksiController extends Controller
             $transaksi->infaq = 15000;
             $transaksi->status_transaksi = "Tunai";
             $transaksi->id_admin = $request->id_admin;
-                $transaksi->save();
+            $transaksi->save();
         }
 
-        $transaksi->total_bayar = 50000*$request->jumlah_bulan;
+        $total_transaksi = 50000*$request->jumlah_bulan;
 
         return response()->json([
-            'message' => 'Transaksi Berhasil',
-            'data_transaksi' => $transaksi
+            'message'           => 'Transaksi Berhasil',
+            'nis'               => $transaksi->nis,
+            'total_bayar'       => $total_transaksi,
+            'status_transaksi'  => $transaksi->status_transaksi,
+            'tanggal_transaksi' => $transaksi->created_at,
+            'admin'             => $transaksi->id_admin
         ], 200);
     }
 
