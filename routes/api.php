@@ -35,18 +35,18 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/tes', [AuthController::class, 'tesApi']);
 
 //Kelola Data Admin
-Route::post('/admin/create', [AdminController::class, 'createAdmin']);
-Route::get('/admin/show', [AdminController::class, 'showAdmin']);
-Route::put('/admin/update/{id}', [AdminController::class, 'updateAdmin']);
-Route::delete('/admin/delete/{id}', [AdminController::class, 'deleteAdmin']);
+Route::post('/admin', [AdminController::class, 'createAdmin']);
+Route::get('/admin', [AdminController::class, 'getAdmin']);
+Route::put('/admin/{id}', [AdminController::class, 'updateAdmin']);
+Route::delete('/admin/{id}', [AdminController::class, 'deleteAdmin']);
 
 //Kelola Data Santri
-Route::post('/santri/create', [SantriController::class, 'createSantri']);
-Route::get('/santri/show', [SantriController::class, 'showSantri']);
-Route::get('/santri/detail/{id}', [SantriController::class, 'detailSantri']);
-Route::put('/santri/update/{id}', [SantriController::class, 'updateSantri']);
-Route::delete('/santri/delete/{id}', [SantriController::class, 'deleteSantri']);
+Route::post('/santri', [SantriController::class, 'createSantri']);
+Route::get('/santri', [SantriController::class, 'getSantri']);
+Route::get('/santri/{nis}', [SantriController::class, 'detailSantri']);
+Route::put('/santri/{nis}', [SantriController::class, 'updateSantri']);
+Route::delete('/santri/{nis}', [SantriController::class, 'deleteSantri']);
 
 //Transaksi
-Route::post('/transaksi/create', [TransaksiController::class, 'createTransaksi']);
-Route::get('/transaksi/tes', [TransaksiController::class, 'index']);
+Route::post('/transaksi', [TransaksiController::class, 'createTransaksi']);
+Route::get('/transaksi/hitung/uang', [TransaksiController::class, 'getUangMasuk']);
