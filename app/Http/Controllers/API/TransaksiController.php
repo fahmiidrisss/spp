@@ -11,6 +11,11 @@ class TransaksiController extends Controller
 {
     public function createTransaksi(Request $request)
     {
+        date_default_timezone_set("Asia/Jakarta");
+        $CURRENT_TIME = date("H:i", strtotime("now"));
+        $CURRENT_DATE = date("Y-m-d", strtotime("now"));
+        $CURRENT_TIMEDATE = date("Y-m-d H:i", strtotime("now"));
+
         $request->validate([
             'nis'               => 'required',
             'jumlah_bulan'      => 'required',
