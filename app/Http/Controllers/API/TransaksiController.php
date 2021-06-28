@@ -48,6 +48,7 @@ class TransaksiController extends Controller
         }
 
         $total_transaksi = 50000*$request->jumlah_bulan;
+        $time = Transaksi::where('nis', $request->nis)->first();
 
         return response()->json([
             'message'           => 'Transaksi Berhasil',
@@ -55,7 +56,7 @@ class TransaksiController extends Controller
             'nis'               => $transaksi->nis,
             'total_bayar'       => $total_transaksi,
             'status_transaksi'  => $transaksi->status_transaksi,
-            'tanggal_transaksi' => $transaksi->created_at,
+            'tanggal_transaksi' => $time->created_at,
             'admin'             => $transaksi->id_admin
         ], 200);
     }
