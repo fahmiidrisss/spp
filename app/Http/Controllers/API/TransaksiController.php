@@ -32,11 +32,12 @@ class TransaksiController extends Controller
                 $transaksi->save();
         }
 
-        return response()->json(array(
+        $transaksi->total_bayar = 50000*$request->jumlah_bulan;
+
+        return response()->json([
             'message' => 'Transaksi Berhasil',
-            'transaksi' => $transaksi->toArray()),
-            200
-        );
+            'data_transaksi' => $transaksi
+        ], 200);
     }
 
     public function index()
