@@ -12,7 +12,7 @@ class TransaksiController extends Controller
     {
         $request->validate([
             'nis'               => 'required',
-            'total_transaksi'   => 'required',
+            'total_bayar'       => 'required',
             'spp'               => 'required',
             'infaq'             => 'required',
             'id_admin'          => 'required'
@@ -21,7 +21,7 @@ class TransaksiController extends Controller
         // dd($request->all());
         $transaksi = new Transaksi();
         $transaksi->nis = $request->nis;
-        $transaksi->total_transaksi = 50000;
+        $transaksi->total_bayar = 50000;
         $transaksi->spp = 35000;
         $transaksi->infaq = 15000;
         $transaksi->status_transaksi = "Tunai";

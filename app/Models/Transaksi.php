@@ -12,7 +12,7 @@ class Transaksi extends Model
 
     protected $fillable = [
         'nis',
-        'total_transaksi',
+        'total_bayar',
         'spp',
         'infaq',
         'status_transaksi',
