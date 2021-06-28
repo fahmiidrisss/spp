@@ -76,4 +76,15 @@ class TransaksiController extends Controller
             'uang_masuk'    => $uang
         ], 200);
     }
+
+    public function getSantriBayar()
+    {
+        $bulan = Carbon::now();
+        $santri = Transaksi::whereMonth('created_at', $bulan->month)->groupBy('nis');
+
+        return response()->json([
+            'message'       => 'Data Uang Masuk Bulan Ini',
+            'santri'    => $santri
+        ], 200);
+    }
 }

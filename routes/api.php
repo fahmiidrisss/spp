@@ -50,3 +50,4 @@ Route::delete('/santri/{nis}', [SantriController::class, 'deleteSantri']);
 //Transaksi
 Route::post('/transaksi', [TransaksiController::class, 'createTransaksi']);
 Route::get('/transaksi/hitung/uang', [TransaksiController::class, 'getUangMasuk']);
+Route::get('/transaksi/hitung/santri', [TransaksiController::class, 'getSantriBayar']);
