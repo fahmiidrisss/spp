@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use App\Models\Santri;
 
 class TransaksiController extends Controller
 {
@@ -18,6 +19,14 @@ class TransaksiController extends Controller
             'infaq'             => 'required',
             'id_admin'          => 'required'
         ]);
+
+        $santri = Santri::where('nis', $request->nis)->first();
+        if(!$santri)
+        {
+            return response()->json([
+                'message' => 'NIS tidak terdaftar'
+            ], 401);
+        }
 
         // dd($request->all());
         for($i = 0; $i < $request->jumlah_bulan; $i++)
