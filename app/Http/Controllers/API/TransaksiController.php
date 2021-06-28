@@ -21,9 +21,9 @@ class TransaksiController extends Controller
         // dd($request->all());
         $transaksi = new Transaksi();
         $transaksi->nis = $request->nis;
-        $transaksi->total_transaksi = "50000";
-        $transaksi->spp = "35000";
-        $transaksi->infaq = "15000";
+        $transaksi->total_transaksi = 50000;
+        $transaksi->spp = 35000;
+        $transaksi->infaq = 15000;
         $transaksi->status_transaksi = "Tunai";
         $transaksi->id_admin = $request->id_admin;
         for($i = 0; $i < $jumlah_bulan; $i++)
