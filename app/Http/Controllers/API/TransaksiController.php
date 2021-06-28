@@ -43,6 +43,7 @@ class TransaksiController extends Controller
             $transaksi->infaq = 15000;
             $transaksi->status_transaksi = "Tunai";
             $transaksi->id_admin = $request->id_admin;
+            $transaksi->created_at = $CURRENT_TIMEDATE;
             $transaksi->save();
         }
 
