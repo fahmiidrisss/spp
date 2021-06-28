@@ -69,7 +69,7 @@ class TransaksiController extends Controller
     public function getUangMasuk()
     {
         $bulan = Carbon::now();
-        $uang = Transaksi::count('total_bayar');
+        $uang = Transaksi::count('total_bayar')->whereMonth('created_at', '=', $bulan->month)->get();
 
         return response()->json([
             'message'       => 'Data Uang Masuk Bulan Ini',
