@@ -80,7 +80,7 @@ class TransaksiController extends Controller
     public function getSantriBayar()
     {
         $bulan = Carbon::now();
-        $santri = Transaksi::whereMonth('created_at', $bulan->month)->count('nis');
+        $santri = Transaksi::whereMonth('created_at', $bulan->month)->count('nis')->groupBy('nis');
 
         return response()->json([
             'message'       => 'Data Uang Masuk Bulan Ini',
