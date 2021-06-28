@@ -77,14 +77,25 @@ class TransaksiController extends Controller
         ], 200);
     }
 
-    public function getSantriBayar()
-    {
-        $bulan = Carbon::now();
-        $santri = Transaksi::whereMonth('created_at', $bulan->month)->count("*")->groupBy('nis');
+    // public function getSantriBayar()
+    // {
+    //     $bulan = Carbon::now();
+    //     $santri = Transaksi::whereMonth('created_at', $bulan->month)->count("*")->groupBy('nis');
 
-        return response()->json([
-            'message'       => 'Data Uang Masuk Bulan Ini',
-            'santri'    => $santri
-        ], 200);
+    //     return response()->json([
+    //         'message'       => 'Data Uang Masuk Bulan Ini',
+    //         'santri'    => $santri
+    //     ], 200);
+    // }
+
+    public function getTransaksi()
+    {
+        $transaksi = Transaksi::orderBy('id_transaksi', 'DESC')->get();
+
+        return response()->json(array(
+            'message' => 'Riwayat Transaksi Berhasil Ditampilkan',
+            'transaksi' => $transaksi->toArray()),
+            200
+        );
     }
 }
