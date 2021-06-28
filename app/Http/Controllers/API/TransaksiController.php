@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\Santri;
+use Carbon\Carbon;
 
 class TransaksiController extends Controller
 {
@@ -65,5 +66,14 @@ class TransaksiController extends Controller
         return "Ini Controller Transaksi";
     }
 
-    
+    public function getUangMasuk()
+    {
+        $bulan = Carbon::now();
+        $uang = Transaksi::count('total_bayar')->whereMonth('created_at', '=', $bulan->month);
+
+        return response()->json([
+            'message'       => 'Data Uang Masuk Bulan Ini',
+            'uang_masuk'    => $uang
+        ], 200);
+    }
 }
