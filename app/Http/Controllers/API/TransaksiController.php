@@ -7,6 +7,7 @@ use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\Santri;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class TransaksiController extends Controller
 {
@@ -77,16 +78,17 @@ class TransaksiController extends Controller
         ], 200);
     }
 
-    // public function getSantriBayar()
-    // {
-    //     $bulan = Carbon::now();
-    //     $santri = Transaksi::whereMonth('created_at', $bulan->month)->count("*")->groupBy('nis');
+    public function getSantriBayar()
+    {
+        $bulan = Carbon::now();
+        $santri = Transaksi::groupBy('nis')->select('nis', DB::raw('count(nis) as total'))->get();
+        
 
-    //     return response()->json([
-    //         'message'       => 'Data Uang Masuk Bulan Ini',
-    //         'santri'    => $santri
-    //     ], 200);
-    // }
+        return response()->json([
+            'message'       => 'Data Uang Masuk Bulan Ini',
+            'santri'    => count($santri)
+        ], 200);
+    }
 
     public function getTransaksi()
     {
