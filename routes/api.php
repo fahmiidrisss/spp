@@ -52,3 +52,4 @@ Route::post('/transaksi', [TransaksiController::class, 'createTransaksi']);
 Route::get('/transaksi/hitung/uang', [TransaksiController::class, 'getUangMasuk']);
 Route::get('/transaksi/hitung/santri', [TransaksiController::class, 'getSantriBayar']);
 Route::get('/transaksi', [TransaksiController::class, 'getTransaksi']);
+Route::get('/transaksi/{nis}', [TransaksiController::class, 'getTransaksiSantri']);

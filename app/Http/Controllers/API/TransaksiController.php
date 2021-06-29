@@ -49,6 +49,9 @@ class TransaksiController extends Controller
             $transaksi->save();
         }
 
+        $tunggakan = $santri->jumlah_tunggakan-$request->jumlah_bulan;
+        $santri->update(['jumlah_tunggakan' => $tunggakan]);
+
         $total_transaksi = 50000*$request->jumlah_bulan;
 
         return response()->json([
@@ -96,6 +99,17 @@ class TransaksiController extends Controller
 
         return response()->json(array(
             'message' => 'Riwayat Transaksi Berhasil Ditampilkan',
+            'transaksi' => $transaksi->toArray()),
+            200
+        );
+    }
+
+    public function getTransaksiSantri($nis)
+    {
+        $transaksi = Transaksi::where('nis', $nis)->get();
+
+        return response()->json(array(
+            'message' => 'Riwayat Pembayaran Berhasil Ditampilkan',
             'transaksi' => $transaksi->toArray()),
             200
         );
