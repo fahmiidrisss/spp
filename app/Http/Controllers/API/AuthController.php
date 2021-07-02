@@ -21,20 +21,30 @@ class AuthController extends Controller
 
         $token = $user->createToken('token')->plainTextToken;
 
+        if($user->role == 'Admin')
+        {
+            return response()->json([
+                'message'   => 'Authorized',
+                'username'  => $user->username,
+                'token'     => $token,
+                'role'      => $user->role,
+                'list_menu' => [
+                    'dashboard',
+                    'akun',
+                    'admin',
+                    'santri',
+                    'input_transaksi',
+                    'riwayat_transaksi',
+                    'laporan'
+                ]
+            ], 200);
+        }
+        
         return response()->json([
             'message'   => 'Authorized',
             'username'  => $user->username,
             'token'     => $token,
             'role'      => $user->role,
-            'list_menu' => [
-                'dashboard',
-                'akun',
-                'admin',
-                'santri',
-                'input_transaksi',
-                'riwayat_transaksi',
-                'laporan'
-            ]
         ], 200);
     }
 
