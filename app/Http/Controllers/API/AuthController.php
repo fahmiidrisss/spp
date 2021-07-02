@@ -25,7 +25,16 @@ class AuthController extends Controller
             'message'   => 'Authorized',
             'username'  => $user->username,
             'token'     => $token,
-            'role'      => $user->role
+            'role'      => $user->role,
+            'list_menu' => [
+                'dashboard',
+                'akun',
+                'admin',
+                'santri',
+                'input_transaksi',
+                'riwayat_transaksi',
+                'laporan'
+            ]
         ], 200);
     }
 
