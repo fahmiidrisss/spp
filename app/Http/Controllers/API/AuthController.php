@@ -38,6 +38,18 @@ class AuthController extends Controller
                     'laporan'
                 ]
             ], 200);
+        } else if($user->role == Operator) 
+        {
+            return response()->json([
+                'message'   => 'Authorized',
+                'username'  => $user->username,
+                'token'     => $token,
+                'role'      => $user->role,
+                'list_menu' => [
+                    'dashboard',
+                    'input_transaksi'
+                    ]
+            ], 200);
         }
         
         return response()->json([
