@@ -38,7 +38,7 @@ class AuthController extends Controller
                     'laporan'
                 ]
             ], 200);
-        } else if($user->role == Operator) 
+        } else if($user->role == 'Operator') 
         {
             return response()->json([
                 'message'   => 'Authorized',
