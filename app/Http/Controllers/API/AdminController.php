@@ -37,6 +37,7 @@ class AdminController extends Controller
         $user->username = $request->username; 
         $user->role = $request->role;
         $user->password = Hash::make($request->password); 
+        $user->save();
 
         return response()->json([
             'message' => 'Data Admin Berhasil Ditambahkan',
