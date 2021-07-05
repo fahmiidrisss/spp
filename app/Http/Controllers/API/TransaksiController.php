@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Santri;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class TransaksiController extends Controller
 {
@@ -114,4 +115,18 @@ class TransaksiController extends Controller
             200
         );
     }
+
+    // Generate PDF
+    public function createPDF() {
+        // retreive all records from db
+        $data = Transaksi::all();
+  
+        // share data to view
+        view()->share('transaksi',$data);
+
+        // $pdf = PDF::loadView('pdf_view', $data);
+  
+        // download PDF file with download method
+        return $data->download('pdf_file.pdf');
+      }
 }
