@@ -25,23 +25,24 @@ class AdminController extends Controller
             'password'  => Password::min(8)   
         ]);
 
+        $user = new User;
+        $user->username = $request->username; 
+        $user->role = $request->role;
+        $user->password = Hash::make($request->password); 
+        $user->save();
         // dd($request->all());
         $admin = new Admin;
         $admin->username = $request->username;
         $admin->nama_admin = $request->nama_admin;
         $admin->role = $request->role;
         $admin->paraf = $request->paraf;
+        $admin->id_user = $user->id_user;
         $admin->save();
 
-        $user = new User;
-        $user->username = $request->username; 
-        $user->role = $request->role;
-        $user->password = Hash::make($request->password); 
-        $user->save();
-
         return response()->json([
-            'message' => 'Data Admin Berhasil Ditambahkan',
-            'data_admin' => $admin
+            'message'   => 'Data Admin Berhasil Ditambahkan',
+            'data_admin'=> $admin,
+            'user'      => $user
         ], 200);
     }
 
