@@ -7,9 +7,14 @@ use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
+
 
 class AdminController extends Controller
 {
+    // use PasswordValidationRules;
+
     public function createAdmin(Request $request)
     {
         $request->validate([
@@ -17,7 +22,7 @@ class AdminController extends Controller
             'nama_admin'=> 'required',
             'role'      => 'required',
             'paraf'     => 'required',
-            'password'  => $this->passwordRules()   
+            'password'  => Password::min(8)   
         ]);
 
         // dd($request->all());
