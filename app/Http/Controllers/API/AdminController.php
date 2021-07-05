@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -14,7 +16,8 @@ class AdminController extends Controller
             'username'  => 'required',
             'nama_admin'=> 'required',
             'role'      => 'required',
-            'paraf'     => 'required'    
+            'paraf'     => 'required',
+            'password'  => $this->passwordRules()   
         ]);
 
         // dd($request->all());
@@ -24,6 +27,11 @@ class AdminController extends Controller
         $admin->role = $request->role;
         $admin->paraf = $request->paraf;
         $admin->save();
+
+        $user = new User;
+        $user->username = $request->username; 
+        $user->role = $request->role;
+        $user->password = Hash::make($request->password); 
 
         return response()->json([
             'message' => 'Data Admin Berhasil Ditambahkan',
