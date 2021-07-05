@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Santri;
-use App\Models\Kelas;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class SantriController extends Controller
 {
@@ -26,8 +27,13 @@ class SantriController extends Controller
         ]);
         // $santri = Kelas::select('id_kelas')->where('nama_kelas', $request->nama_kelas);
 
-        // dd($request->all());
-        // dd($santri);
+        $user = new User;
+        $user->username = $request->nis;
+        $user->role = "Santri";
+        $user->password = Hash::make($request->nis."123");
+        $user->save();
+
+
         $santri = new Santri;
         $santri->nis = $request->nis;
         $santri->nama_santri = $request->nama_santri;
@@ -40,6 +46,7 @@ class SantriController extends Controller
         $santri->jumlah_tunggakan = $request->jumlah_tunggakan;
         $id_kelas = DB::table('kelas')->select('id_kelas')->where('nama_kelas', $request->nama_kelas)->first();
         $santri->id_kelas = $id_kelas->id_kelas;
+        $santri->id_user = $user->id_user;
         $santri->save();
 
         return response()->json([
@@ -51,6 +58,7 @@ class SantriController extends Controller
     public function getSantri()
     {
         $santri = Santri::all();
+
 
         return response()->json(array(
             'status' => 'success',
