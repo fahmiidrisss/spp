@@ -19,6 +19,7 @@ class Transfer extends Model
         'id_admin',
         'id_kode',
         'updated_at',
-        'created_at'
+        'created_at',
+        'gambar'
     ];
 }
