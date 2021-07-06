@@ -38,6 +38,7 @@ Route::get('/tes', [AuthController::class, 'tesApi']);
 //Kelola Data Admin
 Route::post('/admin', [AdminController::class, 'createAdmin']);
 Route::get('/admin', [AdminController::class, 'getAdmin']);
+Route::get('/admin/{id}', [AdminController::class, 'detailAdmin']);
 Route::put('/admin/{id}', [AdminController::class, 'updateAdmin']);
 Route::delete('/admin/{id}', [AdminController::class, 'deleteAdmin']);
 

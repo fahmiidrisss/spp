@@ -90,4 +90,13 @@ class AdminController extends Controller
         ], 200);
     }
 
+    public function detailAdmin($id)
+    {
+        $admin = Admin::find($id);
+
+        return response()->json([
+            'message'   => 'Detail Admin Berhasil Ditampilkan',
+            'admin'    => $admin
+        ], 200);
+    }
 }
