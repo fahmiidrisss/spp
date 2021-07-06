@@ -62,3 +62,6 @@ Route::get('/laporan/uangmasuk', [TransaksiController::class, 'createPDF']);
 //Transfer
 Route::get('/transfer/kodeunik', [TransferController::class, 'getKode']);
 Route::post('/transfer', [TransferController::class, 'createTransfer']);
+
+//User
+Route::post('/user', [AuthController::class, 'createUser']);

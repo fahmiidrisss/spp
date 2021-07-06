@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -71,13 +73,23 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function tesWeb()
+    public function createUser(Request $request)
     {
-        return "tes Web";
-    }
+        $request->validate([
+            'username'  => 'required',
+            'role'      => 'required',
+            'password'  => Password::min(8)
+        ]);
 
-    public function tesApi()
-    {
-        return "ini tes API";
+        $user = new User;
+        $user->username = $request->username; 
+        $user->role = $request->role;
+        $user->password = Hash::make($request->password); 
+        $user->save();
+        
+        return response()->json([
+            'message'   => 'User Berhasil Ditambahkan',
+            'user'      => $user
+        ], 200);
     }
 }
