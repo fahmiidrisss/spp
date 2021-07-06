@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         if($user->role == 'Admin')
         {
-            $admin = Admin::find($request->username);
+            $admin = Admin::where('username', $request->username)->first();
             return response()->json([
                 'message'   => 'Authorized',
                 'id_admin'  => $admin->id_admin,
@@ -45,7 +45,7 @@ class AuthController extends Controller
             ], 200);
         } else if($user->role == 'Operator') 
         {
-            $admin = Admin::find($request->username);
+            $admin = Admin::where('username', $request->username)->first();
             return response()->json([
                 'message'   => 'Authorized',
                 'id_admin'  => $admin->id_admin,
