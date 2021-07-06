@@ -16,7 +16,7 @@ class TransferController extends Controller
 
         return response()->json([
             'message'   => 'Kode Unik Berhasil Digenerate',
-            'kode_unik'=> $kode
+            'kode_unik' => $kode
         ], 200);
     }
 }
