@@ -85,7 +85,7 @@ class TransaksiController extends Controller
     public function getSantriBayar()
     {
         $bulan = Carbon::now();
-        $santri = Transaksi::groupBy('nis')->select('nis', DB::raw('count(nis) as total'))->get();
+        $santri = Transaksi::whereMonth('created_at', $bulan->month)->groupBy('nis')->select('nis', DB::raw('count(nis) as total'))->get();
         
 
         return response()->json([
@@ -115,18 +115,4 @@ class TransaksiController extends Controller
             200
         );
     }
-
-    // Generate PDF
-    public function createPDF() {
-        // retreive all records from db
-        $data = Transaksi::all();
-  
-        // share data to view
-        view()->share('transaksi',$data);
-
-        // $pdf = PDF::loadView('pdf_view', $data);
-  
-        // download PDF file with download method
-        return $data->download('pdf_file.pdf');
-      }
 }
