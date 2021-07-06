@@ -14,8 +14,15 @@ class CreateTransfersTable extends Migration
     public function up()
     {
         Schema::create('transfers', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->increments('id_transfer');
+            $table->string('nis');
+            $table->float('total_transfer');
+            $table->float('spp');
+            $table->float('infaq');
+            $table->string('status_transfer');
+            $table->integer('id_admin');
+            $table->integer('id_kode');
+            $table->timestamp('tanggal_transfer');
         });
     }
 

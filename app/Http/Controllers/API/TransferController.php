@@ -5,19 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kode;
-
+use App\Models\Santri;
+use App\Models\Transfer;
 
 class TransferController extends Controller
 {
-    public function getKode()
+    public static function getKode()
     {
         $kode = Kode::where('status_kode', 0)->first();
         $kode->update(['status_kode' => 1]);
 
-        return response()->json([
-            'message'   => 'Kode Unik Berhasil Digenerate',
-            'kode_unik' => $kode
-        ], 200);
+        return $kode;
     }
 
     public function createTransfer(Request $request)
@@ -30,7 +28,7 @@ class TransferController extends Controller
         $request->validate([
             'nis'               => 'required',
             'jumlah_bulan'      => 'required',
-            'total_bayar'       => 'required',
+            'total_transfer'    => 'required',
             'spp'               => 'required',
             'infaq'             => 'required',
             'id_admin'          => 'required'
@@ -44,33 +42,25 @@ class TransferController extends Controller
             ], 401);
         }
 
-        // dd($request->all());
-        for($i = 0; $i < $request->jumlah_bulan; $i++)
-        {
-            $transaksi = new Transaksi();
-            $transaksi->nis = $request->nis;
-            $transaksi->total_bayar = 50000;
-            $transaksi->spp = 35000;
-            $transaksi->infaq = 15000;
-            $transaksi->status_transaksi = "Tunai";
-            $transaksi->id_admin = $request->id_admin;
-            $transaksi->created_at = $CURRENT_TIMEDATE;
-            $transaksi->save();
-        }
+        $kode_transfer = self::getKode();
 
-        $tunggakan = $santri->jumlah_tunggakan-$request->jumlah_bulan;
-        $santri->update(['jumlah_tunggakan' => $tunggakan]);
+        // dd($request->all());
+        $transfer = new Transfer();
+        $transfer->nis = $request->nis;
+        $transfer->total_transfer = 50000*$request->jumlah_bulan;
+        $transfer->spp = ($transfer->total_transfer/100)*70;
+        $transfer->infaq = ($transfer->total_transfer/100)*30;
+        $transfer->status_transfer = "Transfer";
+        $transfer->id_admin = $request->id_admin;
+        $transfer->id_kode = $kode_transfer->id_kode;
+        $transfer->created_at = $CURRENT_TIMEDATE;
+        $transfer->save();
 
         $total_transaksi = 50000*$request->jumlah_bulan;
 
         return response()->json([
-            'message'           => 'Transaksi Berhasil',
-            'id_transaksi'      => $transaksi->id_transaksi,
-            'nis'               => $transaksi->nis,
-            'total_bayar'       => $total_transaksi,
-            'status_transaksi'  => $transaksi->status_transaksi,
-            'tanggal_transaksi' => $CURRENT_TIMEDATE,
-            'admin'             => $transaksi->id_admin
+            'message'           => 'Transfer Berhasil',
+            'kode_transfer'      => $transfer->id_kode
         ], 200);
     }
 }
