@@ -56,11 +56,10 @@ class TransferController extends Controller
         $transfer->created_at = $CURRENT_TIMEDATE;
         $transfer->save();
 
-        $total_transaksi = 50000*$request->jumlah_bulan;
-
+        
         return response()->json([
             'message'           => 'Transfer Berhasil',
-            'kode_transfer'      => $transfer->id_kode
+            'kode_transfer'      => $kode_transfer->nama_kode
         ], 200);
     }
 }
