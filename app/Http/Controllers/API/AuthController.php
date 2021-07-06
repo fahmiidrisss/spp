@@ -105,4 +105,5 @@ class AuthController extends Controller
             'message' => 'User Berhasil Dihapus'
         ], 200);
     }
+    
 }
