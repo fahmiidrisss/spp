@@ -55,11 +55,10 @@ class TransferController extends Controller
         $transfer->id_kode = $kode_transfer->id_kode;
         $transfer->created_at = $CURRENT_TIMEDATE;
         $transfer->save();
-
         
         return response()->json([
             'message'           => 'Transfer Berhasil',
-            'kode_transfer'      => $kode_transfer->nama_kode
+            'kode_transfer'      => $kode_transfer->kode_unik
         ], 200);
     }
 }
