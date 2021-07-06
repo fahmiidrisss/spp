@@ -65,3 +65,4 @@ Route::post('/transfer', [TransferController::class, 'createTransfer']);
 
 //User
 Route::post('/user', [AuthController::class, 'createUser']);
+Route::delete('/user/{id}', [AuthController::class, 'deleteUser']);
