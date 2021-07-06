@@ -96,4 +96,13 @@ class AuthController extends Controller
             'user'      => $user
         ], 200);
     }
+
+    public function deleteUser($id)
+    {
+        $user = User::find($id)->delete();
+
+        return response()->json([
+            'message' => 'User Berhasil Dihapus'
+        ], 200);
+    }
 }
