@@ -124,4 +124,22 @@ class SantriController extends Controller
             'santri'    => $santri
         ], 200);
     }
+
+    public function cekStatusSPP($nis)
+    {
+        $santri = Santri::find($nis);
+        
+        if($santri->jumlah_tunggakan > 0)
+        {
+            return response()->json([
+                'message'   => 'SPP Bulan ini Belum Lunas',
+                'tunggakan'    => $santri->jumlah_tunggakan
+            ], 200);
+        }
+
+        return response()->json([
+            'message'   => 'SPP Bulan ini Lunas',
+            'santri'    => $santri->jumlah_tunggakan
+        ], 200);
+    }
 }

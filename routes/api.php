@@ -48,6 +48,7 @@ Route::get('/santri', [SantriController::class, 'getSantri']);
 Route::get('/santri/{nis}', [SantriController::class, 'detailSantri']);
 Route::put('/santri/{nis}', [SantriController::class, 'updateSantri']);
 Route::delete('/santri/{nis}', [SantriController::class, 'deleteSantri']);
+Route::get('/santri/status/{nis}', [SantriController::class, 'cekStatusSPP']);
 
 //Transaksi
 Route::post('/transaksi', [TransaksiController::class, 'createTransaksi']);
