@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -25,9 +26,10 @@ class AuthController extends Controller
 
         if($user->role == 'Admin')
         {
+            $admin = Admin::where('username', $request->username);
             return response()->json([
                 'message'   => 'Authorized',
-                'id_admin'  => $user->id_admin,
+                'id_admin'  => $admin->id_admin,
                 'username'  => $user->username,
                 'token'     => $token,
                 'role'      => $user->role,
@@ -43,8 +45,10 @@ class AuthController extends Controller
             ], 200);
         } else if($user->role == 'Operator') 
         {
+            $admin = Admin::where('username', $request->username);
             return response()->json([
                 'message'   => 'Authorized',
+                'id_admin'  => $admin->id_admin,
                 'username'  => $user->username,
                 'token'     => $token,
                 'role'      => $user->role,
