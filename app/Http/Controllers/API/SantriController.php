@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Santri;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class SantriController extends Controller
 {
@@ -140,6 +141,21 @@ class SantriController extends Controller
         return response()->json([
             'message'   => 'SPP Bulan ini Lunas',
             'santri'    => $santri->jumlah_tunggakan
+        ], 200);
+    }
+
+    public function updatePassword(Request $request, $nis)
+    {
+        $santri = User::find($nis);
+
+        $request->validate([
+            'password'  => Password::min(8)
+        ]);
+
+        $santri->update(['password'=>Hash::make($request->password)]);
+        return response()->json([
+            'message'   => 'Password Santri Berhasil Diubah',
+            'santri'=> $santri
         ], 200);
     }
 }
