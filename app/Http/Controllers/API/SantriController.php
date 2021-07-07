@@ -152,10 +152,11 @@ class SantriController extends Controller
             'password'  => Password::min(8)
         ]);
 
-        $santri->update(['password'=>Hash::make($request->password)]);
+        $santri->update([
+            'password'=>Hash::make($request->password)
+        ]);
         return response()->json([
-            'message'   => 'Password Santri Berhasil Diubah',
-            'santri'=> $santri
+            'message'   => 'Password Santri Berhasil Diubah'
         ], 200);
     }
 }
