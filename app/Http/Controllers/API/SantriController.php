@@ -146,7 +146,7 @@ class SantriController extends Controller
 
     public function updatePassword(Request $request, $nis)
     {
-        $santri = User::find($nis);
+        $santri = User::where('username', $nis);
 
         $request->validate([
             'password'  => Password::min(8)
