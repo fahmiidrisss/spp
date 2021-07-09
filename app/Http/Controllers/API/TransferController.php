@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Kode;
 use App\Models\Santri;
 use App\Models\Transfer;
+use App\Models\Transaksi;
 
 class TransferController extends Controller
 {
@@ -59,6 +60,54 @@ class TransferController extends Controller
         return response()->json([
             'message'           => 'Transfer Berhasil',
             'kode_transfer'      => $kode_transfer->kode_unik
+        ], 200);
+    }
+
+    public function getTransfer()
+    {
+        $transfer = Transfer::all();
+
+        return response()->json(array(
+            'message' => 'Riwayat Transfer Berhasil Ditampilkan',
+            'transfer' => $transfer->toArray()),
+            200
+        );
+    }
+
+    public function deleteTransfer($id)
+    {
+        $transfer = Transfer::find($id);
+        $transaksi = $transfer;
+
+        $jumlah_bulan = ($transfer->total_transfer/50000);
+
+        for($i = 0; $i < $jumlah_bulan; $i++)
+        {
+            $transaksi = new Transaksi();
+            $transaksi->nis = $transfer->nis;
+            $transaksi->total_bayar = 50000;
+            $transaksi->spp = 35000;
+            $transaksi->infaq = 15000;
+            $transaksi->status_transaksi = "Transfer";
+            $transaksi->id_admin = $transfer->id_admin;
+            $transaksi->created_at = $transfer->created_at;
+            $transaksi->save();
+        }
+
+        $santri = Santri::where('nis', $transfer->nis)->first();
+        $tunggakan = $santri->jumlah_tunggakan-$jumlah_bulan;
+        $santri->update(['jumlah_tunggakan' => $tunggakan]);
+        $total_transaksi = 50000*$jumlah_bulan;
+        $transfer = Transfer::find($id)->delete();
+
+        return response()->json([
+            'message'           => 'Transaksi Berhasil',
+            'id_transaksi'      => $transaksi->id_transaksi,
+            'nis'               => $transaksi->nis,
+            'total_bayar'       => $total_transaksi,
+            'status_transaksi'  => $transaksi->status_transaksi,
+            'tanggal_transaksi' => $transaksi->created_at,
+            'admin'             => $transaksi->id_admin
         ], 200);
     }
 }
