@@ -40,7 +40,7 @@ class TransaksiController extends Controller
 
         for($i = 0; $i < $request->jumlah_bulan; $i++)
         {
-            $transaksi = Transaksi::where('nis', $request->nis)->orderBy('updated_at', 'desc')->first();
+            $transaksi = Transaksi::where('nis', $request->nis)->orderBy('id_transaksi', 'desc')->first();
             if($transaksi == null)
             {
                 $bulan = env("AWAL_BULAN_AJARAN", 7);
