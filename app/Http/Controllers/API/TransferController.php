@@ -85,7 +85,7 @@ class TransferController extends Controller
 
         for($i = 0; $i < $jumlah_bulan; $i++)
         {
-            $last_transaction = Transaksi::where('nis', $request->nis)->orderBy('id_transaksi', 'desc')->first();
+            $last_transaction = Transaksi::where('nis', $transfer->nis)->orderBy('id_transaksi', 'desc')->first();
             if($last_transaction == null)
             {
                 $bulan = env("AWAL_BULAN_AJARAN", 7);
