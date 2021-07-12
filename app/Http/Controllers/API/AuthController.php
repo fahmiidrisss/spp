@@ -11,7 +11,7 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function loginAdmin(Request $request)
     {
         $user = User::where('username', $request->username)->first();
     
@@ -56,6 +56,38 @@ class AuthController extends Controller
                     'dashboard',
                     'input_transaksi'
                     ]
+            ], 200);
+        }
+        
+        return response()->json([
+            'message'   => 'Unauthorized'
+        ], 200);
+    }
+
+    public function loginSantri(Request $request)
+    {
+        $user = User::where('username', $request->username)->first();
+    
+        if(!$user || !\Hash::check($request->password, $user->password))
+        {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $token = $user->createToken('token')->plainTextToken;
+
+        if($user->role == 'Admin')
+        {
+            $admin = Admin::where('username', $request->username)->first();
+            return response()->json([
+                'message'   => 'Unauthorized'
+            ], 200);
+        } else if($user->role == 'Operator') 
+        {
+            $admin = Admin::where('username', $request->username)->first();
+            return response()->json([
+                'message'   => 'Unauthorized'
             ], 200);
         }
         

@@ -31,7 +31,8 @@ Route::group(['middleware'=>'auth:sanctum'], function()
 });
 
 //Login User
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/admin/login', [AuthController::class, 'loginAdmin']);
+Route::post('/santri/login', [AuthController::class, 'loginSantri']);
 
 //Tes
 Route::get('/tes', [AuthController::class, 'tesApi']);
