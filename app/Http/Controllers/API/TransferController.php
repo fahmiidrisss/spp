@@ -8,6 +8,7 @@ use App\Models\Kode;
 use App\Models\Santri;
 use App\Models\Transfer;
 use App\Models\Transaksi;
+use Carbon\Carbon;
 
 class TransferController extends Controller
 {
@@ -76,6 +77,7 @@ class TransferController extends Controller
 
     public function deleteTransfer($id)
     {
+        $time = Carbon::now();
         $transfer = Transfer::find($id);
         $transaksi = $transfer;
 
@@ -83,11 +85,28 @@ class TransferController extends Controller
 
         for($i = 0; $i < $jumlah_bulan; $i++)
         {
+            $last_transaction = Transaksi::where('nis', $request->nis)->orderBy('id_transaksi', 'desc')->first();
+            if($last_transaction == null)
+            {
+                $bulan = env("AWAL_BULAN_AJARAN", 7);
+                $tahun = $time->year;
+            } else if($last_transaction != null && $last_transaction->bulan < 12 )
+            {
+                $bulan = $last_transaction->bulan+1;
+                $tahun = $time->year;
+            } else if($last_transaction != null && $last_transaction->bulan >= 12)
+            {
+                    $bulan = 1;
+                    $tahun = $time->year;
+            }
+
             $transaksi = new Transaksi();
             $transaksi->nis = $transfer->nis;
             $transaksi->total_bayar = 50000;
             $transaksi->spp = 35000;
             $transaksi->infaq = 15000;
+            $transaksi->bulan = $bulan;
+            $transaksi->tahun = $tahun;
             $transaksi->status_transaksi = "Transfer";
             $transaksi->id_admin = $transfer->id_admin;
             $transaksi->created_at = $transfer->created_at;
