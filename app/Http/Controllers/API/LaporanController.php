@@ -7,14 +7,17 @@ use PDF;
 
 class LaporanController extends Controller 
 {
+
+    public function showTransaksi(){
+      $transaksi = Transaksi::all();
+      return view('index', compact('transaksi'));
+    }
+
     // Generate PDF
-    public function createPDF() {
-      // retreive all records from db
-      $data = Transaksi::all();
+    public function getLaporanUangMasuk(Request $request) {
 
       // share data to view
-      view()->share('employee',$data);
-      $pdf = PDF::loadView('pdf_view', $data);
+      $pdf = PDF::loadView('pdf_view', $request);
 
       // download PDF file with download method
       return $pdf->download('pdf_file.pdf');

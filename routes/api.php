@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\SantriController;
 use App\Http\Controllers\API\TransaksiController;
 use App\Http\Controllers\API\TransferController;
+use App\Http\Controllers\API\LaporanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,9 +58,10 @@ Route::get('/transaksi/hitung/uang', [TransaksiController::class, 'getUangMasuk'
 Route::get('/transaksi/hitung/santri', [TransaksiController::class, 'getSantriBayar']);
 Route::get('/transaksi', [TransaksiController::class, 'getTransaksi']);
 Route::get('/transaksi/{nis}', [TransaksiController::class, 'getTransaksiSantri']);
+Route::get('/transaksi/laporan/uang', [TransaksiController::class, 'getLaporanTransaksi']);
 
 //Laporan
-Route::get('/laporan/uangmasuk', [TransaksiController::class, 'createPDF']);
+Route::get('/laporan/uangmasuk', [LaporanController::class, 'getLaporanUangMasuk']);
 
 //Transfer
 Route::get('/transfer/kodeunik', [TransferController::class, 'getKode']);

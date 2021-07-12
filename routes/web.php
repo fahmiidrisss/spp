@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,3 +44,7 @@ Route::group(['middleware'=>'auth:sanctum'], function()
 
 //Login User
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/', [LaporanController::class, 'showTransaksi']);
+
+Route::get('/transaksi/pdf', [LaporanController::class, 'getLaporanUangMasuk']);

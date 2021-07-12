@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\Santri;
+use App\Models\Transfer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -18,6 +19,7 @@ class TransaksiController extends Controller
         $CURRENT_TIME = date("H:i", strtotime("now"));
         $CURRENT_DATE = date("Y-m-d", strtotime("now"));
         $CURRENT_TIMEDATE = date("Y-m-d H:i", strtotime("now"));
+        $time = Carbon::now();
 
         $request->validate([
             'nis'               => 'required',
@@ -36,18 +38,35 @@ class TransaksiController extends Controller
             ], 401);
         }
 
-        // dd($request->all());
         for($i = 0; $i < $request->jumlah_bulan; $i++)
         {
+            $transaksi = Transaksi::where('nis', $request->nis)->orderBy('updated_at', 'desc')->first();
+            if($transaksi == null)
+            {
+                $bulan = env("AWAL_BULAN_AJARAN", 7);
+                $tahun = $time->year;
+            } else if($transaksi != null && $transaksi->bulan < 12 )
+            {
+                $bulan = $transaksi->bulan+1;
+                $tahun = $time->year;
+            } else if($transaksi != null && $transaksi->bulan >= 12)
+            {
+                    $bulan = 1;
+                    $tahun = $time->year;
+            }
+
             $transaksi = new Transaksi();
             $transaksi->nis = $request->nis;
             $transaksi->total_bayar = 50000;
             $transaksi->spp = 35000;
             $transaksi->infaq = 15000;
+            $transaksi->bulan = $bulan;
+            $transaksi->tahun = $tahun;
             $transaksi->status_transaksi = "Tunai";
             $transaksi->id_admin = $request->id_admin;
             $transaksi->created_at = $CURRENT_TIMEDATE;
             $transaksi->save();
+            // dd($transaksi);
         }
 
         $tunggakan = $santri->jumlah_tunggakan-$request->jumlah_bulan;
@@ -57,12 +76,13 @@ class TransaksiController extends Controller
 
         return response()->json([
             'message'           => 'Transaksi Berhasil',
-            'id_transaksi'      => $transaksi->id_transaksi,
-            'nis'               => $transaksi->nis,
-            'total_bayar'       => $total_transaksi,
-            'status_transaksi'  => $transaksi->status_transaksi,
-            'tanggal_transaksi' => $CURRENT_TIMEDATE,
-            'admin'             => $transaksi->id_admin
+            // 'id_transaksi'      => $transaksi->id_transaksi,
+            // 'nis'               => $transaksi->nis,
+            // 'total_bayar'       => $total_transaksi,
+            // 'status_transaksi'  => $transaksi->status_transaksi,
+            // 'tanggal_transaksi' => $CURRENT_TIMEDATE,
+            // 'admin'             => $transaksi->id_admin
+            'transaksi' => $transaksi
         ], 200);
     }
 
@@ -103,6 +123,15 @@ class TransaksiController extends Controller
             'transaksi' => $transaksi->toArray()),
             200
         );
+    }
+
+    //API getTransaksi per bulan
+    public function getLaporanTransaksi(Request $request)
+    {
+        $transaksi = DB::table('transaksis')
+            ->join('santris', 'transaksis.nis', '=', 'santris.nis')
+            ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
+            ->select('transaksis.nis', 'santris.nama_santri', 'kelas.nama_kelas', '');
     }
 
     public function getTransaksiSantri($nis)

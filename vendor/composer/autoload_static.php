@@ -642,6 +642,7 @@ class ComposerStaticInit37d7e51a1f49c4086f0ccb6eea4592bb
         'App\\Models\\Kode' => __DIR__ . '/../..' . '/app/Models/Kode.php',
         'App\\Models\\Santri' => __DIR__ . '/../..' . '/app/Models/Santri.php',
         'App\\Models\\Transaksi' => __DIR__ . '/../..' . '/app/Models/Transaksi.php',
+        'App\\Models\\Transfer' => __DIR__ . '/../..' . '/app/Models/Transfer.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
