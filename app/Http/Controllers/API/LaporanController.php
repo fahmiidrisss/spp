@@ -7,7 +7,6 @@ use PDF;
 
 class LaporanController extends Controller 
 {
-
     public function showTransaksi(){
       $transaksi = Transaksi::all();
       return view('index', compact('transaksi'));
