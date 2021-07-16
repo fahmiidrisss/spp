@@ -16,13 +16,13 @@ class CreateTransfersTable extends Migration
         Schema::create('transfers', function (Blueprint $table) {
             $table->increments('id_transfer');
             $table->string('nis');
-            $table->float('total_transfer');
-            $table->float('spp');
-            $table->float('infaq');
-            $table->string('status_transfer');
+            $table->integer('total_transfer');
+            $table->integer('spp');
+            $table->integer('infaq');
+            $table->string('status_transfer')->nullable();
             $table->integer('id_admin');
             $table->integer('id_kode');
-            $table->timestamp('tanggal_transfer');
+            $table->date('tanggal_transfer');
         });
     }
 

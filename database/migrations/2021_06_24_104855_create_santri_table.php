@@ -19,8 +19,8 @@ class CreateSantriTable extends Migration
             $table->date('tanggal_lahir');
             $table->string('alamat', 100);
             $table->string('no_hp', 13);
-            $table->string('nama_wali', 100);
-            $table->string('jenis_kelamin', 100);
+            $table->string('jenis_kelamin', 2);
+            $table->string('nama_wali', 50);
             $table->integer('subsidi');
             $table->integer('jumlah_tunggakan');
             $table->integer('id_kelas');

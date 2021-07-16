@@ -16,12 +16,14 @@ class CreateTransaksiTable extends Migration
         Schema::create('transaksi', function (Blueprint $table) {
             $table->increments('id_transaksi');
             $table->string('nis');
-            $table->float('total_transaksi');
-            $table->float('spp');
-            $table->float('infaq');
-            $table->string('status_transaksi');
+            $table->integer('total_bayar');
+            $table->integer('spp');
+            $table->integer('infaq');
+            $table->integer('bulan');
+            $table->integer('tahun');
+            $table->string('status_transaksi')->nullable();
             $table->integer('id_admin');
-            $table->timestamp('tanggal_transaksi');
+            $table->date('tanggal_transaksi');
         });
     }
 

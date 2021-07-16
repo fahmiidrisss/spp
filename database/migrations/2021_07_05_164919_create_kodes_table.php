@@ -16,7 +16,7 @@ class CreateKodesTable extends Migration
         Schema::create('kodes', function (Blueprint $table) {
             $table->id('id_kode');
             $table->string('kode_unik');
-            $table->boolean('status');
+            $table->integer('status');
         });
     }
 
