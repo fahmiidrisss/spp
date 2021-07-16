@@ -12,8 +12,6 @@ use Illuminate\Validation\Rules\Password;
 
 class AdminController extends Controller
 {
-    // use PasswordValidationRules;
-
     public function createAdmin(Request $request)
     {
         $request->validate([
@@ -59,7 +57,8 @@ class AdminController extends Controller
     public function updateAdmin(Request $request, $id)
     {
         $admin = Admin::find($id);
-        
+        $user = User::where('username', $admin->username);
+
         $request->validate([
             'username'  => 'required',
             'nama_admin'=> 'required',
@@ -68,12 +67,17 @@ class AdminController extends Controller
         ]);
 
         $admin->update([
-            'username' => $request->username,
+            'username'  => $request->username,
             'nama_admin'=> $request->nama_admin,
             'role'      => $request->role,
             'paraf'     => $request->paraf
         ]);
 
+        
+        $user->update([
+            'username'  => $request->username,
+            'role'      => $request->role
+        ]);
         return response()->json([
             'message' => 'Data Admin Berhasil Diubah',
             'data_admin' => $admin

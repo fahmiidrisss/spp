@@ -17,6 +17,7 @@ class User extends Authenticatable
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+    public $timestamps = false;
     protected $primaryKey = 'id_user';
     /**
      * The attributes that are mass assignable.
