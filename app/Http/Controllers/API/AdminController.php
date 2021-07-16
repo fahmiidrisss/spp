@@ -86,7 +86,9 @@ class AdminController extends Controller
 
     public function deleteAdmin($id)
     {
-        $admin = Admin::find($id)->delete();
+        $admin = Admin::find($id);
+        $user = User::where('username', $admin->username)->delete();
+        $admin->delete();
 
         return response()->json([
             'message' => 'Data Admin Berhasil Dihapus'
