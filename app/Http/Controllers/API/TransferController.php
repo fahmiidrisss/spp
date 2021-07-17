@@ -23,9 +23,9 @@ class TransferController extends Controller
     public function createTransfer(Request $request)
     {
         date_default_timezone_set("Asia/Jakarta");
-        $CURRENT_TIME = date("H:i", strtotime("now"));
-        $CURRENT_DATE = date("Y-m-d", strtotime("now"));
-        $CURRENT_TIMEDATE = date("Y-m-d H:i", strtotime("now"));
+        $jam_sekarang = date("H:i", strtotime("now"));
+        $tanggal_sekarang = date("Y-m-d", strtotime("now"));
+        $waktu_sekarang = date("Y-m-d H:i", strtotime("now"));
 
         $request->validate([
             'nis'               => 'required',
@@ -55,7 +55,7 @@ class TransferController extends Controller
         $transfer->status_transfer = "Transfer";
         $transfer->id_admin = $request->id_admin;
         $transfer->id_kode = $kode_transfer->id_kode;
-        $transfer->created_at = $CURRENT_TIMEDATE;
+        $transfer->tanggal_transfer = $tanggal_sekarang;
         $transfer->save();
         
         return response()->json([
@@ -77,7 +77,7 @@ class TransferController extends Controller
 
     public function deleteTransfer($id)
     {
-        $time = Carbon::now();
+        $waktu = Carbon::now();
         $transfer = Transfer::find($id);
         $transaksi = $transfer;
 
@@ -89,15 +89,15 @@ class TransferController extends Controller
             if($last_transaction == null)
             {
                 $bulan = env("AWAL_BULAN_AJARAN", 7);
-                $tahun = $time->year;
+                $tahun = $waktu->year;
             } else if($last_transaction != null && $last_transaction->bulan < 12 )
             {
                 $bulan = $last_transaction->bulan+1;
-                $tahun = $time->year;
+                $tahun = $waktu->year;
             } else if($last_transaction != null && $last_transaction->bulan >= 12)
             {
                     $bulan = 1;
-                    $tahun = $time->year;
+                    $tahun = $waktu->year;
             }
 
             $transaksi = new Transaksi();
@@ -109,7 +109,7 @@ class TransferController extends Controller
             $transaksi->tahun = $tahun;
             $transaksi->status_transaksi = "Transfer";
             $transaksi->id_admin = $transfer->id_admin;
-            $transaksi->created_at = $transfer->created_at;
+            $transaksi->tanggal_transaksi = $transfer->tanggal_transfer;
             $transaksi->save();
         }
 
@@ -125,7 +125,7 @@ class TransferController extends Controller
             'nis'               => $transaksi->nis,
             'total_bayar'       => $total_transaksi,
             'status_transaksi'  => $transaksi->status_transaksi,
-            'tanggal_transaksi' => $transaksi->created_at,
+            'tanggal_transaksi' => $transaksi->tanggal_transaksi,
             'admin'             => $transaksi->id_admin
         ], 200);
     }

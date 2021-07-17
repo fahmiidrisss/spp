@@ -9,6 +9,7 @@ class Transfer extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id_transfer';
+    public $timestamps = false;
 
     protected $fillable = [
         'nis',
@@ -18,8 +19,7 @@ class Transfer extends Model
         'status_transfer',
         'id_admin',
         'id_kode',
-        'updated_at',
-        'created_at',
+        'tanggal_transfer',
         'gambar'
     ];
 }

@@ -16,10 +16,10 @@ class TransaksiController extends Controller
     public function createTransaksi(Request $request)
     {
         date_default_timezone_set("Asia/Jakarta");
-        $CURRENT_TIME = date("H:i", strtotime("now"));
-        $CURRENT_DATE = date("Y-m-d", strtotime("now"));
-        $CURRENT_TIMEDATE = date("Y-m-d H:i", strtotime("now"));
-        $time = Carbon::now();
+        $jam_sekarang = date("H:i", strtotime("now"));
+        $tanggal_sekarang = date("Y-m-d", strtotime("now"));
+        $waktu_sekarang = date("Y-m-d H:i", strtotime("now"));
+        $waktu = Carbon::now();
 
         $request->validate([
             'nis'               => 'required',
@@ -44,15 +44,15 @@ class TransaksiController extends Controller
             if($transaksi == null)
             {
                 $bulan = env("AWAL_BULAN_AJARAN", 7);
-                $tahun = $time->year;
+                $tahun = $waktu->year;
             } else if($transaksi != null && $transaksi->bulan < 12 )
             {
                 $bulan = $transaksi->bulan+1;
-                $tahun = $time->year;
+                $tahun = $waktu->year;
             } else if($transaksi != null && $transaksi->bulan >= 12)
             {
                     $bulan = 1;
-                    $tahun = $time->year;
+                    $tahun = $waktu->year;
             }
 
             $transaksi = new Transaksi();
@@ -64,7 +64,7 @@ class TransaksiController extends Controller
             $transaksi->tahun = $tahun;
             $transaksi->status_transaksi = "Tunai";
             $transaksi->id_admin = $request->id_admin;
-            $transaksi->created_at = $CURRENT_TIMEDATE;
+            $transaksi->tanggal_transaksi = $tanggal_sekarang;
             $transaksi->save();
             // dd($transaksi);
         }
@@ -80,7 +80,7 @@ class TransaksiController extends Controller
             'nis'               => $transaksi->nis,
             'total_bayar'       => $total_transaksi,
             'status_transaksi'  => $transaksi->status_transaksi,
-            'tanggal_transaksi' => $CURRENT_TIMEDATE,
+            'tanggal_transaksi' => $transaksi->tanggal_transaksi,
             'admin'             => $transaksi->id_admin
             // 'transaksi' => $transaksi
         ], 200);
@@ -94,7 +94,7 @@ class TransaksiController extends Controller
     public function getUangMasuk()
     {
         $bulan = Carbon::now();
-        $uang = Transaksi::whereMonth('created_at', $bulan->month)->sum('total_bayar');
+        $uang = Transaksi::whereMonth('tanggal_transaksi', $bulan->month)->sum('total_bayar');
 
         return response()->json([
             'message'       => 'Data Uang Masuk Bulan Ini',
@@ -105,7 +105,7 @@ class TransaksiController extends Controller
     public function getSantriBayar()
     {
         $bulan = Carbon::now();
-        $santri = Transaksi::whereMonth('created_at', $bulan->month)->groupBy('nis')->select('nis', DB::raw('count(nis) as total'))->get();
+        $santri = Transaksi::whereMonth('tanggal_transaksi', $bulan->month)->groupBy('nis')->select('nis', DB::raw('count(nis) as total'))->get();
         
 
         return response()->json([
