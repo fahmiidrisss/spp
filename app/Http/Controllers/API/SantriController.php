@@ -28,13 +28,21 @@ class SantriController extends Controller
         ]);
         // $santri = Kelas::select('id_kelas')->where('nama_kelas', $request->nama_kelas);
 
+        $user = Santri::where('nis', $request->nis)->first();
+        if($user != null)
+        {
+            return response()->json([
+                'message' => 'NIS telah digunakan'
+            ], 400);
+        } 
+
         $user = new User;
         $user->username = $request->nis;
         $user->role = "Santri";
         $user->password = Hash::make($request->nis."123");
         $user->save();
-
-
+        
+        
         $santri = new Santri;
         $santri->nis = $request->nis;
         $santri->nama_santri = $request->nama_santri;
@@ -109,7 +117,9 @@ class SantriController extends Controller
 
     public function deleteSantri($nis)
     {
-        $santri = Santri::find($nis)->delete();
+        $santri = Santri::find($nis);
+        $user = User::where('username', $santri->nis)->delete();
+        $santri->delete();
 
         return response()->json([
             'message' => 'Data Santri Berhasil Dihapus'

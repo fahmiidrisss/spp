@@ -22,6 +22,14 @@ class AdminController extends Controller
             'password'  => Password::min(8)   
         ]);
 
+        $admin = Admin::where('username', $request->username)->first();
+        if($admin != null)
+        {
+            return response()->json([
+                'message' => 'Username telah digunakan'
+            ], 400);
+        }
+
         $user = new User;
         $user->username = $request->username; 
         $user->role = $request->role;
