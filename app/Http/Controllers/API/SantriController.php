@@ -162,10 +162,10 @@ class SantriController extends Controller
                 'tunggakan'    => $santri->jumlah_tunggakan
             ], 200);
         }
-
+        
         return response()->json([
             'message'   => 'SPP Bulan ini Lunas',
-            'santri'    => $santri->jumlah_tunggakan
+            'tunggakan' => 0
         ], 200);
     }
 

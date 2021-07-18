@@ -155,6 +155,7 @@ class TransaksiController extends Controller
         $transaksi = DB::table('transaksis')
             ->join('admins', 'transaksis.id_admin', '=', 'admins.id_admin')
             ->select('transaksis.tanggal_transaksi', 'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
+            ->where('nis', $nis)
             ->get();
 
         return response()->json(array(
