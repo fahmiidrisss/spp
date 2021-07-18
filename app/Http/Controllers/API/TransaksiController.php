@@ -190,6 +190,13 @@ class TransaksiController extends Controller
         );    
     }
 
+    public function getLaporanTunggakan()
+    {
+        return response()->json([
+            'message'   => 'API LAPORAN TUNGGAKAN'
+        ], 200);
+    }
+
     public function tesTransaksi()
     {
         return response()->json([
