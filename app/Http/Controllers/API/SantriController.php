@@ -131,8 +131,20 @@ class SantriController extends Controller
 
     public function detailSantri($nis)
     {
-        $santri = Santri::find($nis);
+        $santri = DB::table('santris')
+            ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
+            ->select('santris.nis', 'santris.nama_santri','kelas.nama_kelas', 'santris.tanggal_lahir', 
+            'santris.alamat', 'santris.no_hp', 'santris.jenis_kelamin', 'santris.nama_wali', 'santris.subsidi', 
+            'santris.jumlah_tunggakan')
+            ->where('nis', $nis)
+            ->get();
 
+        if($santri == null)
+        {
+            return response()->json([
+                'message'   => 'Santri tidak ditemukan'
+            ], 400);    
+        }
         return response()->json([
             'message'   => 'Detail Santri Berhasil Ditampilkan',
             'santri'    => $santri
