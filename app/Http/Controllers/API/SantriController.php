@@ -66,8 +66,11 @@ class SantriController extends Controller
 
     public function getSantri()
     {
-        $santri = Santri::all();
-
+        // $santri = Santri::all();
+        $santri = DB::table('santris')
+            ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
+            ->select('santris.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'santris.subsidi', 'santris.jumlah_tunggakan')
+            ->get();
 
         return response()->json(array(
             'status' => 'success',

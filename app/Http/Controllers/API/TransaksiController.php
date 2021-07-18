@@ -6,13 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use App\Models\Santri;
-use App\Models\Transfer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use PDF;
 
 class TransaksiController extends Controller
 {
+    public function try()
+    {
+        return response()->json([
+            'message' => 'Tes Route'
+        ], 200);
+    }
+
     public function createTransaksi(Request $request)
     {
         date_default_timezone_set("Asia/Jakarta");
@@ -109,8 +115,8 @@ class TransaksiController extends Controller
         
 
         return response()->json([
-            'message'       => 'Data Uang Masuk Bulan Ini',
-            'santri'    => count($santri)
+            'message'       => 'Jumlah Santri yang bayar Bulan Ini',
+            'santri'        => count($santri)
         ], 200);
     }
 
@@ -125,18 +131,31 @@ class TransaksiController extends Controller
         );
     }
 
-    //API getTransaksi per bulan
-    public function getLaporanTransaksi(Request $request)
+    public function getTunggakanSantri()
     {
-        $transaksi = DB::table('transaksis')
-            ->join('santris', 'transaksis.nis', '=', 'santris.nis')
+        $tunggakan = DB::table('santri')
             ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
-            ->select('transaksis.nis', 'santris.nama_santri', 'kelas.nama_kelas', '');
+            ->select('santris.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'santris.jumlah_tunggakan')
+            ->where('jumlah_tunggakan', '>', 0)
+            ->get();
+
+        $jumlah_santri = count($tunggakan);
+
+        return response()->json(array(
+            'message'       => 'Laporan Tunggakan Santri',
+            'jumlah_santri' => $jumlah_santri,
+            'transaksi'     => $tunggakan->toArray()),
+            200
+        );    
     }
+
 
     public function getTransaksiSantri($nis)
     {
-        $transaksi = Transaksi::where('nis', $nis)->get();
+        $transaksi = DB::table('transaksis')
+            ->join('admins', 'transaksis.id_admin', '=', 'admins.id_admin')
+            ->select('transaksis.tanggal_transaksi', 'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
+            ->get();
 
         return response()->json(array(
             'message' => 'Riwayat Pembayaran Berhasil Ditampilkan',
