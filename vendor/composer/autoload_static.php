@@ -624,6 +624,7 @@ class ComposerStaticInit37d7e51a1f49c4086f0ccb6eea4592bb
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\API\\AdminController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/AdminController.php',
         'App\\Http\\Controllers\\API\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/AuthController.php',
+        'App\\Http\\Controllers\\API\\LaporanController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/LaporanController.php',
         'App\\Http\\Controllers\\API\\SantriController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/SantriController.php',
         'App\\Http\\Controllers\\API\\TransaksiController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/TransaksiController.php',
         'App\\Http\\Controllers\\API\\TransferController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/TransferController.php',

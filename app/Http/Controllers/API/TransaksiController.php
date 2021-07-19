@@ -99,8 +99,8 @@ class TransaksiController extends Controller
 
     public function getUangMasuk()
     {
-        $bulan = Carbon::now();
-        $uang = Transaksi::whereMonth('tanggal_transaksi', $bulan->month)->sum('total_bayar');
+        $waktu = Carbon::now();
+        $uang = Transaksi::where('bulan', $waktu->month)->sum('total_bayar');
 
         return response()->json([
             'message'       => 'Data Uang Masuk Bulan Ini',
@@ -131,30 +131,11 @@ class TransaksiController extends Controller
         );
     }
 
-    public function getTunggakanSantri()
-    {
-        $tunggakan = DB::table('santri')
-            ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
-            ->select('santris.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'santris.jumlah_tunggakan')
-            ->where('jumlah_tunggakan', '>', 0)
-            ->get();
-
-        $jumlah_santri = count($tunggakan);
-
-        return response()->json(array(
-            'message'       => 'Laporan Tunggakan Santri',
-            'jumlah_santri' => $jumlah_santri,
-            'transaksi'     => $tunggakan->toArray()),
-            200
-        );    
-    }
-
-
     public function getTransaksiSantri($nis)
     {
         $transaksi = DB::table('transaksis')
             ->join('admins', 'transaksis.id_admin', '=', 'admins.id_admin')
-            ->select('transaksis.tanggal_transaksi', 'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
+            ->select('transaksis.id_transaksi', 'transaksis.tanggal_transaksi', 'transaksis.bulan', 'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
             ->where('nis', $nis)
             ->get();
 
@@ -165,42 +146,28 @@ class TransaksiController extends Controller
         );
     }
 
-    public function getLaporanTransaksi(Request $request)
-    {
-        $waktu = Carbon::now();
+    // public function getLaporanTransaksi(Request $request)
+    // {
+    //     $waktu = Carbon::now();
 
-        $transaksi = DB::table('transaksis')
-            ->join('santris', 'transaksis.nis', '=', 'santris.nis')
-            ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
-            ->select('transaksis.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'transaksis.total_bayar')
-            ->where([
-                ['bulan', '=', $request->bulan],
-                ['tahun', '=', $waktu->year]
-            ])
-            ->get();
+    //     $transaksi = DB::table('transaksis')
+    //         ->join('santris', 'transaksis.nis', '=', 'santris.nis')
+    //         ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
+    //         ->select('transaksis.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'transaksis.total_bayar')
+    //         ->where([
+    //             ['bulan', '=', $request->bulan],
+    //             ['tahun', '=', $waktu->year]
+    //         ])
+    //         ->get();
 
-        $jumlah_transaksi = Transaksi::where('bulan', $request->bulan)->get();
-        // $total = 50000*count($jumlah_transaksi);
+    //     $jumlah_transaksi = Transaksi::where('bulan', $request->bulan)->get();
+    //     // $total = 50000*count($jumlah_transaksi);
 
-        return response()->json(array(
-            'message'       => 'Laporan Uang Masuk Bulan Ini',
-            'uang_masuk'    => count($jumlah_transaksi)*50000,
-            'transaksi'     => $transaksi->toArray()),
-            200
-        );    
-    }
-
-    public function getLaporanTunggakan()
-    {
-        return response()->json([
-            'message'   => 'API LAPORAN TUNGGAKAN'
-        ], 200);
-    }
-
-    public function tesTransaksi()
-    {
-        return response()->json([
-            'message'   => 'Tes API Transaksi'
-        ], 200);
-    }
+    //     return response()->json(array(
+    //         'message'       => 'Laporan Uang Masuk Bulan Ini',
+    //         'uang_masuk'    => count($jumlah_transaksi)*50000,
+    //         'transaksi'     => $transaksi->toArray()),
+    //         200
+    //     );    
+    // }
 }

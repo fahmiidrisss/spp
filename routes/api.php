@@ -30,6 +30,9 @@ Route::group(['middleware'=>'auth:sanctum'], function()
     Route::get('/logout', [AuthController::class, 'logout']);
 });
 
+
+// Route::get('/laporan/uang', [LaporanController::class, 'getLaporan']);
+
 //Login User
 Route::post('/admin/login', [AuthController::class, 'loginAdmin']);
 Route::post('/santri/login', [AuthController::class, 'loginSantri']);
@@ -56,12 +59,6 @@ Route::get('/transaksi/hitung/uang', [TransaksiController::class, 'getUangMasuk'
 Route::get('/transaksi/hitung/santri', [TransaksiController::class, 'getSantriBayar']);
 Route::get('/transaksi', [TransaksiController::class, 'getTransaksi']);
 Route::get('/transaksi/{nis}', [TransaksiController::class, 'getTransaksiSantri']);
-// Route::get('/transaksi/laporan/uang', [TransaksiController::class, 'getLaporanTransaksi']);
-
-//Laporan
-Route::get('/laporan/uangmasuk', [LaporanController::class, 'getLaporanTransaksi']);
-Route::get('/laporan/tunggakan', [LaporanController::class, 'getLaporanTunggakan']);
-// Route::get('/laporan/uang', [LaporanController::class, 'getLaporan']);
 
 //Transfer
 Route::get('/transfer/kodeunik', [TransferController::class, 'getKode']);
@@ -69,6 +66,11 @@ Route::post('/transfer', [TransferController::class, 'createTransfer']);
 Route::get('/transfer', [TransferController::class, 'getTransfer']);
 Route::delete('/transfer/{id}', [TransferController::class, 'deleteTransfer']);
 
+//Laporan
+Route::get('/laporan/uang/{bulan}', [LaporanController::class, 'getLaporanUangMasuk']);
+Route::get('/laporan/tunggakan', [LaporanController::class, 'getLaporanTunggakan']);
+
 //User
 Route::post('/user', [AuthController::class, 'createUser']);
 Route::delete('/user/{id}', [AuthController::class, 'deleteUser']);
+

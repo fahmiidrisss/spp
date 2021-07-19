@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
-    public function getLaporanUangMasuk(Request $request)
+    public function getLaporanUangMasuk($bulan)
     {
         $waktu = Carbon::now();
 
@@ -20,12 +20,12 @@ class LaporanController extends Controller
             ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
             ->select('transaksis.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'transaksis.total_bayar')
             ->where([
-                ['bulan', '=', $request->bulan],
+                ['bulan', '=', $bulan],
                 ['tahun', '=', $waktu->year]
             ])
             ->get();
 
-        $jumlah_transaksi = Transaksi::where('bulan', $request->bulan)->get();
+        $jumlah_transaksi = Transaksi::where('bulan', $bulan)->get();
         // $total = 50000*count($jumlah_transaksi);
 
         return response()->json(array(
@@ -38,8 +38,21 @@ class LaporanController extends Controller
 
     public function getLaporanTunggakan()
     {
-        return response()->json([
-            'message'   => 'SPP Bulan ini Lunas'
-        ], 200);
+        $tunggakan = DB::table('santris')
+            ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
+            ->select('santris.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'santris.jumlah_tunggakan')
+            ->where('jumlah_tunggakan', '>', 0)
+            ->get();
+
+        $jumlah_santri = count($tunggakan);
+
+        return response()->json(array(
+            'message'       => 'Laporan Tunggakan Santri',
+            'jumlah_santri' => $jumlah_santri,
+            'transaksi'     => $tunggakan->toArray()),
+            200
+        );    
     }
+
+
 }

@@ -17,6 +17,7 @@ return array(
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\API\\AdminController' => $baseDir . '/app/Http/Controllers/API/AdminController.php',
     'App\\Http\\Controllers\\API\\AuthController' => $baseDir . '/app/Http/Controllers/API/AuthController.php',
+    'App\\Http\\Controllers\\API\\LaporanController' => $baseDir . '/app/Http/Controllers/API/LaporanController.php',
     'App\\Http\\Controllers\\API\\SantriController' => $baseDir . '/app/Http/Controllers/API/SantriController.php',
     'App\\Http\\Controllers\\API\\TransaksiController' => $baseDir . '/app/Http/Controllers/API/TransaksiController.php',
     'App\\Http\\Controllers\\API\\TransferController' => $baseDir . '/app/Http/Controllers/API/TransferController.php',
