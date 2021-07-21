@@ -74,6 +74,7 @@ Route::delete('/transfer/{id}', [TransferController::class, 'deleteTransfer']);
 Route::get('/laporan/uang/{bulan}', [LaporanController::class, 'getLaporanUangMasuk']);
 Route::get('/laporan/tunggakan', [LaporanController::class, 'getLaporanTunggakan']);
 Route::get('/laporan/unduh/uang', [LaporanController::class, 'unduhLaporanUangMasuk']);
+Route::get('/laporan/unduh/tunggakan', [LaporanController::class, 'unduhLaporanTunggakan']);
 
 
 //User

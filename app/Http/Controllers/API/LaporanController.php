@@ -58,22 +58,37 @@ class LaporanController extends Controller
         );    
     }
 
-    public function unduhLaporanUangMasuk()
+    public function unduhLaporanUangMasuk(Request $request)
     {
         $tanggal = Carbon::now();
         $namaBulan = $tanggal->format('F');
+        $bulan = [
+            '0' => null, 
+            '1' => 'Januari',
+            '2' => 'Februari',
+            '3' => 'Maret',
+            '4' => 'April',
+            '5' => 'Mei',
+            '6' => 'Juni',
+            '7' => 'Juli',
+            '8' => 'Agustus',
+            '9' => 'September',
+            '10'=> 'Oktober',
+            '11'=> 'November',
+            '12'=> 'Desember'
+        ];  
 
         $transaksi = DB::table('transaksis')
             ->join('santris', 'transaksis.nis', '=', 'santris.nis')
             ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
             ->select('transaksis.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'transaksis.total_bayar', 'transaksis.status_transaksi')
             ->where([
-                ['bulan', '=', $tanggal->month],
+                ['bulan', '=', $request->bulan],
                 ['tahun', '=', $tanggal->year]
             ])
             ->get();
         $data = [
-            'title'     => 'Laporan Keuangan Bulan '.$tanggal->month,
+            'title'     => 'Laporan Keuangan Bulan '.$bulan[$request->bulan],
             'date'      => date('m/d/Y'),
             'transaksi' => $transaksi
         ];
@@ -86,4 +101,5 @@ class LaporanController extends Controller
             'message'       => 'Laporan Keuangan Bulan Ini'
         ], 200);    
     }
+
 }
