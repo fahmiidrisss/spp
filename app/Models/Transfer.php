@@ -17,7 +17,6 @@ class Transfer extends Model
         'spp',
         'infaq',
         'status_transfer',
-        'id_admin',
         'id_kode',
         'tanggal_transfer',
         'gambar'

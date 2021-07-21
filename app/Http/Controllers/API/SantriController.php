@@ -159,12 +159,14 @@ class SantriController extends Controller
         {
             return response()->json([
                 'message'   => 'SPP Bulan ini Belum Lunas',
-                'tunggakan'    => $santri->jumlah_tunggakan
+                'status'    => 0,
+                'tunggakan' => $santri->jumlah_tunggakan
             ], 200);
         }
         
         return response()->json([
             'message'   => 'SPP Bulan ini Lunas',
+            'status'    => 1,
             'tunggakan' => 0
         ], 200);
     }
@@ -174,11 +176,19 @@ class SantriController extends Controller
         $santri = User::where('username', $nis);
 
         $request->validate([
-            'password'  => Password::min(8)
+            'password_lama' => 'required',
+            'password_baru' => Password::min(8)
         ]);
 
+        if(!$santri || !\Hash::check($request->password_lama, $santri->password))
+        {
+            return response()->json([
+                'message' => 'Password Lama Tidak Sesuai'
+            ], 401);
+        }
+
         $santri->update([
-            'password'=>Hash::make($request->password)
+            'password'=>Hash::make($request->password_baru)
         ]);
         return response()->json([
             'message'   => 'Password Santri Berhasil Diubah'

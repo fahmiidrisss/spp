@@ -95,22 +95,65 @@ class TransaksiController extends Controller
     public function getUangBulanan()
     {
         $waktu = Carbon::now();
-        $uang = Transaksi::where('bulan', $waktu->month)->sum('total_bayar');
+        $uang = Transaksi::where('bulan', $waktu->month)
+            ->where('tahun', $waktu->year)
+            ->sum('total_bayar');
 
         return response()->json([
-            'message'       => 'Data Uang Masuk Bulan Ini',
+            'message'       => 'Uang Masuk Pembayaran SPP Bulan Ini',
+            'uang_masuk'    => $uang
+        ], 200);
+    }
+
+    public function getTotalBulanan()
+    {
+        $waktu = Carbon::now();
+        $uang = Transaksi::whereMonth('tanggal_transaksi', $waktu->month)
+            ->whereYear('tanggal_transaksi', $waktu->year)
+            ->sum('total_bayar');
+
+        return response()->json([
+            'message'       => 'Total Uang Masuk Bulan Ini',
+            'uang_masuk'    => $uang
+        ], 200);
+    }
+
+    public function getTotalHarian()
+    {
+        $waktu = Carbon::now();
+        $uang = Transaksi::whereDay('tanggal_transaksi', $waktu->day)
+            ->whereMonth('tanggal_transaksi', $waktu->month)
+            ->whereYear('tanggal_transaksi', $waktu->year)
+            ->sum('total_bayar');
+
+        // $total = $uang*2;
+
+        return response()->json([
+            'message'       => 'Total Uang Masuk Hari Ini',
             'uang_masuk'    => $uang
         ], 200);
     }
 
     public function getSantriBayar()
     {
-        $bulan = Carbon::now();
-        $santri = Transaksi::whereMonth('tanggal_transaksi', $bulan->month)->groupBy('nis')->select('nis', DB::raw('count(nis) as total'))->get();
+        $waktu = Carbon::now();
+        $santri = Transaksi::whereMonth('tanggal_transaksi', $waktu->month)
+            ->groupBy('nis')
+            ->select('nis', DB::raw('count(nis) as total'))
+            ->get();
         
-
         return response()->json([
-            'message'       => 'Jumlah Santri yang bayar Bulan Ini',
+            'message'       => 'Jumlah Santri yang Bayar Bulan Ini',
+            'santri'        => count($santri)
+        ], 200);
+    }
+
+    public function getSantriTunggakan()
+    {
+        $santri = Santri::where('jumlah_tunggakan', '>', 0)->get();
+        
+        return response()->json([
+            'message'       => 'Jumlah Santri yang Menunggak Bulan Ini',
             'santri'        => count($santri)
         ], 200);
     }
@@ -130,7 +173,8 @@ class TransaksiController extends Controller
     {
         $transaksi = DB::table('transaksis')
             ->join('admins', 'transaksis.id_admin', '=', 'admins.id_admin')
-            ->select('transaksis.id_transaksi', 'transaksis.tanggal_transaksi', 'transaksis.bulan', 'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
+            ->select('transaksis.id_transaksi', 'transaksis.tanggal_transaksi', 'transaksis.bulan', 
+            'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
             ->where('nis', $nis)
             ->get();
 

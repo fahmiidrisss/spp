@@ -32,8 +32,7 @@ class TransferController extends Controller
             'jumlah_bulan'      => 'required',
             'total_transfer'    => 'required',
             'spp'               => 'required',
-            'infaq'             => 'required',
-            'id_admin'          => 'required'
+            'infaq'             => 'required'
         ]);
 
         $santri = Santri::where('nis', $request->nis)->first();
@@ -53,7 +52,6 @@ class TransferController extends Controller
         $transfer->spp = ($transfer->total_transfer/100)*70;
         $transfer->infaq = ($transfer->total_transfer/100)*30;
         $transfer->status_transfer = "Transfer";
-        $transfer->id_admin = $request->id_admin;
         $transfer->id_kode = $kode_transfer->id_kode;
         $transfer->tanggal_transfer = $tanggal_sekarang;
         $transfer->save();
@@ -75,7 +73,7 @@ class TransferController extends Controller
         );
     }
 
-    public function deleteTransfer($id)
+    public function deleteTransfer(Request $request, $id)
     {
         $waktu = Carbon::now();
         $transfer = Transfer::find($id);
@@ -108,7 +106,7 @@ class TransferController extends Controller
             $transaksi->bulan = $bulan;
             $transaksi->tahun = $tahun;
             $transaksi->status_transaksi = "Transfer";
-            $transaksi->id_admin = $transfer->id_admin;
+            $transaksi->id_admin = $request->id_admin;
             $transaksi->tanggal_transaksi = $transfer->tanggal_transfer;
             $transaksi->save();
         }
