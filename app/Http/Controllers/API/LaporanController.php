@@ -58,11 +58,10 @@ class LaporanController extends Controller
         );    
     }
 
-    public function unduhLaporanUangMasuk(Request $request)
+    public function unduhLaporanUangMasuk($bulan)
     {
         $tanggal = Carbon::now();
-        $namaBulan = $tanggal->format('F');
-        $bulan = [
+        $namaBulan = [
             '0' => null, 
             '1' => 'Januari',
             '2' => 'Februari',
@@ -83,12 +82,12 @@ class LaporanController extends Controller
             ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
             ->select('transaksis.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'transaksis.total_bayar', 'transaksis.status_transaksi')
             ->where([
-                ['bulan', '=', $request->bulan],
+                ['bulan', '=', $bulan],
                 ['tahun', '=', $tanggal->year]
             ])
             ->get();
         $data = [
-            'title'     => 'Laporan Keuangan Bulan '.$bulan[$request->bulan],
+            'title'     => 'Laporan Keuangan Bulan '.$namaBulan[$bulan],
             'date'      => date('m/d/Y'),
             'transaksi' => $transaksi
         ];
