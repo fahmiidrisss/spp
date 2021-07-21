@@ -55,7 +55,8 @@ Route::put('/santri/password/{nis}', [SantriController::class, 'updatePassword']
 
 //Transaksi
 Route::post('/transaksi', [TransaksiController::class, 'createTransaksi']);
-Route::get('/transaksi/hitung/uang', [TransaksiController::class, 'getUangMasuk']);
+Route::get('/transaksi/uang/bulanan', [TransaksiController::class, 'getUangBulanan']);
+Route::get('/transaksi/uang/harian', [TransaksiController::class, 'getUangMasuk']);
 Route::get('/transaksi/hitung/santri', [TransaksiController::class, 'getSantriBayar']);
 Route::get('/transaksi', [TransaksiController::class, 'getTransaksi']);
 Route::get('/transaksi/{nis}', [TransaksiController::class, 'getTransaksiSantri']);
@@ -69,6 +70,8 @@ Route::delete('/transfer/{id}', [TransferController::class, 'deleteTransfer']);
 //Laporan
 Route::get('/laporan/uang/{bulan}', [LaporanController::class, 'getLaporanUangMasuk']);
 Route::get('/laporan/tunggakan', [LaporanController::class, 'getLaporanTunggakan']);
+Route::get('/laporan/unduh/uang', [LaporanController::class, 'unduhLaporanUangMasuk']);
+
 
 //User
 Route::post('/user', [AuthController::class, 'createUser']);

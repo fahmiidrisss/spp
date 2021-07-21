@@ -92,12 +92,7 @@ class TransaksiController extends Controller
         ], 200);
     }
 
-    public function index()
-    {
-        return "Ini Controller Transaksi";
-    }
-
-    public function getUangMasuk()
+    public function getUangBulanan()
     {
         $waktu = Carbon::now();
         $uang = Transaksi::where('bulan', $waktu->month)->sum('total_bayar');
