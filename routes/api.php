@@ -76,6 +76,7 @@ Route::get('/laporan/uang/{bulan}', [LaporanController::class, 'getLaporanUangMa
 Route::get('/laporan/tunggakan', [LaporanController::class, 'getLaporanTunggakan']);
 Route::get('/laporan/unduh/uang/{bulan}', [LaporanController::class, 'unduhLaporanUangMasuk']);
 Route::get('/laporan/unduh/tunggakan', [LaporanController::class, 'unduhLaporanTunggakan']);
+Route::get('/laporan/unduh/tagihan/{nis}', [LaporanController::class, 'unduhLaporanTagihan']);
 
 
 //User

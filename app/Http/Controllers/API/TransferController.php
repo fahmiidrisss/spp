@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kode;
+use App\Models\Tahunajaran;
 use App\Models\Santri;
 use App\Models\Transfer;
 use App\Models\Transaksi;
@@ -43,6 +44,26 @@ class TransferController extends Controller
             ], 401);
         }
 
+        $maks_bayar = Tahunajaran::sum('jumlah_bulan');
+        $transaksi = Transaksi::where('nis', $request->nis)->get();
+        $total_transaksi = count($transaksi);
+        $maks_transaksi = $maks_bayar-$total_transaksi;
+        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+
+        if($maks_bayar == $total_transaksi)
+        {
+            return response()->json([
+                'message'   => 'SPP Anda Tahun Ini Sudah Lunas, Tunggu Tahun Ajaran Berikutnya'
+            ], 200);    
+        } 
+
+        if($request->jumlah_bulan > $maks_transaksi)
+        {
+            return response()->json([
+                'message'   => 'Anda Hanya Bisa Membayar SPP Maksimal sebanyak '.$maks_transaksi.' Bulan, Silahkan Input Ulang',
+            ], 200); 
+        }
+
         $kode_transfer = self::getKode();
 
         // dd($request->all());
@@ -78,6 +99,7 @@ class TransferController extends Controller
         $waktu = Carbon::now();
         $transfer = Transfer::find($id);
         $transaksi = $transfer;
+        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
 
         $jumlah_bulan = ($transfer->total_transfer/50000);
 
@@ -87,15 +109,15 @@ class TransferController extends Controller
             if($last_transaction == null)
             {
                 $bulan = env("AWAL_BULAN_AJARAN", 7);
-                $tahun = $waktu->year;
+                $tahun = $tahun_ajaran->id_tahun;
             } else if($last_transaction != null && $last_transaction->bulan < 12 )
             {
                 $bulan = $last_transaction->bulan+1;
-                $tahun = $waktu->year;
+                $tahun = $tahun_ajaran->id_tahun;
             } else if($last_transaction != null && $last_transaction->bulan >= 12)
             {
                     $bulan = 1;
-                    $tahun = $waktu->year;
+                    $tahun = $tahun_ajaran->id_tahun;
             }
 
             $transaksi = new Transaksi();
@@ -104,7 +126,7 @@ class TransferController extends Controller
             $transaksi->spp = 35000;
             $transaksi->infaq = 15000;
             $transaksi->bulan = $bulan;
-            $transaksi->tahun = $tahun;
+            $transaksi->id_tahun = $tahun;
             $transaksi->status_transaksi = "Transfer";
             $transaksi->id_admin = $request->id_admin;
             $transaksi->tanggal_transaksi = $transfer->tanggal_transfer;

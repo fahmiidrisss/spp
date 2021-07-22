@@ -147,7 +147,7 @@ class SantriController extends Controller
         }
         return response()->json([
             'message'   => 'Detail Santri Berhasil Ditampilkan',
-            'santri'    => $santri
+            'santri'    => $santri[0]
         ], 200);
     }
 
@@ -173,23 +173,26 @@ class SantriController extends Controller
 
     public function updatePassword(Request $request, $nis)
     {
-        $santri = User::where('username', $nis);
+        $santri = User::where('username', $nis)->first();
 
         $request->validate([
             'password_lama' => 'required',
             'password_baru' => Password::min(8)
         ]);
 
-        if(!$santri || !\Hash::check($request->password_lama, $santri->password))
+        if(!\Hash::check($request->password_lama, $santri->password))
         {
             return response()->json([
                 'message' => 'Password Lama Tidak Sesuai'
             ], 401);
         }
+        
+        // $santri->update([
+        //     'password'  => Hash::make($request->password)
+        // ]);
+        $santri->password = Hash::make($request->password_baru);
+        $santri->save();
 
-        $santri->update([
-            'password'=>Hash::make($request->password_baru)
-        ]);
         return response()->json([
             'message'   => 'Password Santri Berhasil Diubah'
         ], 200);

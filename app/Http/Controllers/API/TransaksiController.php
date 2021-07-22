@@ -197,6 +197,7 @@ class TransaksiController extends Controller
             ->select('transaksis.id_transaksi', 'transaksis.tanggal_transaksi', 'transaksis.bulan', 
             'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
             ->where('nis', $nis)
+            ->orderBy('transaksis.id_transaksi', 'desc')
             ->get();
 
         return response()->json(array(
