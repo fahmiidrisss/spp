@@ -101,4 +101,26 @@ class LaporanController extends Controller
         ], 200);    
     }
 
+    public function unduhLaporanTunggakan()
+    {
+        $tunggakan = DB::table('santris')
+        ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
+        ->select('santris.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'santris.jumlah_tunggakan')
+        ->where('jumlah_tunggakan', '>', 0)
+        ->get();
+
+        $data = [
+            'title'     => 'Laporan Tunggakan SPP',
+            'date'      => date('m/d/Y'),
+            'tunggakan' => $tunggakan
+        ];
+
+        $pdf = PDF::loadView('tunggakan', $data);
+    
+        return $pdf->download('Tunggakan.pdf');
+        
+        return response()->json([
+            'message'       => 'Laporan Tunggakan SPP'
+        ], 200);    
+    }
 }
