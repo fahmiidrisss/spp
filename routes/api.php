@@ -63,6 +63,7 @@ Route::get('/transaksi/santri/tunggakan', [TransaksiController::class, 'getSantr
 Route::get('/transaksi', [TransaksiController::class, 'getTransaksi']);
 Route::get('/transaksi/riwayat/{nis}', [TransaksiController::class, 'getTransaksiSantri']);
 Route::get('/transaksi/kartu/{nis}', [TransaksiController::class, 'getKartuSantri']);
+Route::post('/tes', [TransaksiController::class, 'tesTahun']);
 
 //Transfer
 Route::get('/transfer/kodeunik', [TransferController::class, 'getKode']);

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
+use App\Models\Tahunajaran;
 use Illuminate\Http\Request;
 use App\Models\Santri;
+use App\Models\Transfer;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -22,7 +24,6 @@ class TransaksiController extends Controller
     public function createTransaksi(Request $request)
     {
         date_default_timezone_set("Asia/Jakarta");
-        $jam_sekarang = date("H:i", strtotime("now"));
         $tanggal_sekarang = date("Y-m-d", strtotime("now"));
         $waktu_sekarang = date("Y-m-d H:i", strtotime("now"));
         $waktu = Carbon::now();
@@ -41,7 +42,27 @@ class TransaksiController extends Controller
         {
             return response()->json([
                 'message' => 'NIS tidak terdaftar'
-            ], 401);
+            ], 404);
+        }
+        
+        $maks_bayar = Tahunajaran::sum('jumlah_bulan');
+        $transaksi = Transaksi::where('nis', $request->nis)->get();
+        $total_transaksi = count($transaksi);
+        $maks_transaksi = $maks_bayar-$total_transaksi;
+        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+
+        if($maks_bayar == $total_transaksi)
+        {
+            return response()->json([
+                'message'   => 'SPP Anda Tahun Ini Sudah Lunas, Tunggu Tahun Ajaran Berikutnya'
+            ], 200);    
+        } 
+
+        if($request->jumlah_bulan > $maks_transaksi)
+        {
+            return response()->json([
+                'message'   => 'Anda Hanya Bisa Membayar SPP Maksimal sebanyak '.$maks_transaksi.' Bulan, Silahkan Input Ulang',
+            ], 200); 
         }
 
         for($i = 0; $i < $request->jumlah_bulan; $i++)
@@ -50,15 +71,15 @@ class TransaksiController extends Controller
             if($transaksi == null)
             {
                 $bulan = env("AWAL_BULAN_AJARAN", 7);
-                $tahun = $waktu->year;
+                $tahun = $tahun_ajaran->id_tahun;
             } else if($transaksi != null && $transaksi->bulan < 12 )
             {
                 $bulan = $transaksi->bulan+1;
-                $tahun = $waktu->year;
+                $tahun = $tahun_ajaran->id_tahun;
             } else if($transaksi != null && $transaksi->bulan >= 12)
             {
                     $bulan = 1;
-                    $tahun = $waktu->year;
+                    $tahun = $tahun_ajaran->id_tahun;
             }
 
             $transaksi = new Transaksi();
@@ -67,7 +88,7 @@ class TransaksiController extends Controller
             $transaksi->spp = 35000;
             $transaksi->infaq = 15000;
             $transaksi->bulan = $bulan;
-            $transaksi->tahun = $tahun;
+            $transaksi->id_tahun = $tahun;
             $transaksi->status_transaksi = "Tunai";
             $transaksi->id_admin = $request->id_admin;
             $transaksi->tanggal_transaksi = $tanggal_sekarang;
@@ -96,7 +117,7 @@ class TransaksiController extends Controller
     {
         $waktu = Carbon::now();
         $uang = Transaksi::where('bulan', $waktu->month)
-            ->where('tahun', $waktu->year)
+            ->whereYear('tanggal_transaksi', $waktu->year)
             ->sum('total_bayar');
 
         return response()->json([
@@ -183,5 +204,50 @@ class TransaksiController extends Controller
             'transaksi' => $transaksi->toArray()),
             200
         );
+    }
+
+    public function getKartuSantri($nis)
+    {
+        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        
+        $transaksi = DB::table('transaksis')
+            ->join('admins', 'transaksis.id_admin', '=', 'admins.id_admin')
+            ->join('tahunajarans', 'transaksis.id_tahun', '=', 'tahunajarans.id_tahun')
+            ->select('transaksis.id_transaksi', 'transaksis.tanggal_transaksi', 'transaksis.bulan', 
+            'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
+            ->where('transaksis.nis', $nis)
+            ->where('transaksis.id_tahun', $tahun_ajaran->id_tahun)
+            ->get();
+
+            return response()->json(array(
+                'message' => 'Kartu SPP Berhasil Ditampilkan',
+                'transaksi' => $transaksi->toArray()),
+                200
+            );
+    }
+
+    public function tesTahun(Request $request)
+    {
+        $maks_bayar = Tahunajaran::sum('jumlah_bulan');
+        $transaksi = Transaksi::where('nis', $request->nis)->get();
+        $total_transaksi = count($transaksi);
+        $maks_transaksi = $maks_bayar-$total_transaksi;
+
+        if($maks_bayar == $total_transaksi)
+        {
+            return response()->json([
+                'message'   => 'SPP Anda Tahun Ini Sudah Lunas, Tunggu Tahun Ajaran Berikutnya'
+            ], 200);    
+        } 
+
+        if($request->jumlah_bulan > $maks_transaksi)
+        {
+            return response()->json([
+                'message'   => 'Anda Hanya Bisa Membayar SPP Maksimal sebanyak '.$maks_transaksi.' Bulan, Silahkan Input Ulang',
+            ], 200); 
+        }
+        return response()->json([
+            'max'   => $maks_transaksi
+        ], 200);
     }
 }
