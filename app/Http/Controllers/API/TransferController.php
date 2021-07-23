@@ -10,6 +10,8 @@ use App\Models\Santri;
 use App\Models\Transfer;
 use App\Models\Transaksi;
 use Carbon\Carbon;
+use Validator;
+use Storage;
 
 class TransferController extends Controller
 {
@@ -79,7 +81,8 @@ class TransferController extends Controller
         
         return response()->json([
             'message'           => 'Transfer Berhasil',
-            'kode_transfer'      => $kode_transfer->kode_unik
+            'kode_transfer'      => $kode_transfer->kode_unik,
+            'id_transfer'       => $transfer->id_transfer
         ], 200);
     }
 
@@ -147,6 +150,52 @@ class TransferController extends Controller
             'status_transaksi'  => $transaksi->status_transaksi,
             'tanggal_transaksi' => $transaksi->tanggal_transaksi,
             'admin'             => $transaksi->id_admin
+        ], 200);
+    }
+
+    public function uploadGambar(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|image:jpeg,png,jpg|'
+         ]);
+         if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Format Gambar Harus JPG, JPEG, atau PNG'
+            ], 400);
+         }
+         $validator = Validator::make($request->all(), [
+            'image' => 'max:2048'
+         ]);
+         if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Ukuran Gambar tidak boleh lebih dari 2MB'
+            ], 400);
+         }
+         $uploadFolder = 'users';
+         $image = $request->file('image');
+         $image_uploaded_path = $image->store($uploadFolder, 'public');
+         $uploadedImageResponse = array(
+            "image_name" => basename($image_uploaded_path),
+            "image_url" => 'http://localhost:8000/storage/'.($image_uploaded_path),
+            "mime" => $image->getClientMimeType()
+         );
+        return response()->json([
+             'message'  => "Upload Gambar Berhasil",
+             'file'     => $uploadedImageResponse
+        ], 200);
+    }
+
+    public function updateTransfer(Request $request)
+    {
+        $kode_unik = Kode::where('kode_unik', $request->kode_unik)->first();
+
+        $transfer = Transfer::where('id_kode', $kode_unik->id_kode)->first();
+        $transfer->update([
+            'gambar'        => $request->image_name,
+            'path_gambar'   => $request->image_url
+        ]);
+        return response()->json([
+            'message'  => "Gambar Telah Tersimpan"
         ], 200);
     }
 }

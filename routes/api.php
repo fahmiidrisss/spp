@@ -70,6 +70,8 @@ Route::get('/transfer/kodeunik', [TransferController::class, 'getKode']);
 Route::post('/transfer', [TransferController::class, 'createTransfer']);
 Route::get('/transfer', [TransferController::class, 'getTransfer']);
 Route::delete('/transfer/{id}', [TransferController::class, 'deleteTransfer']);
+Route::post('/transfer/upload/gambar', [TransferController::class, 'uploadGambar']);
+Route::put('/transfer', [TransferController::class, 'updateTransfer']);
 
 //Laporan
 Route::get('/laporan/uang/{bulan}', [LaporanController::class, 'getLaporanUangMasuk']);

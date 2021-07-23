@@ -19,6 +19,7 @@ class Transfer extends Model
         'status_transfer',
         'id_kode',
         'tanggal_transfer',
-        'gambar'
+        'gambar',
+        'path_gambar'
     ];
 }
