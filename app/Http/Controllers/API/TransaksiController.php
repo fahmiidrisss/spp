@@ -116,12 +116,14 @@ class TransaksiController extends Controller
     public function getUangBulanan()
     {
         $waktu = Carbon::now();
-        $uang = Transaksi::where('bulan', $waktu->month)
-            ->whereYear('tanggal_transaksi', $waktu->year)
-            ->sum('total_bayar');
+        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        $uang = Transaksi::selectRaw('bulan, sum(total_bayar) as total')
+            ->groupBy('bulan')
+            ->where('id_tahun', $tahun_ajaran->id_tahun)
+            ->get();
 
         return response()->json([
-            'message'       => 'Uang Masuk Pembayaran SPP Bulan Ini',
+            'message'       => 'Uang Masuk Pembayaran SPP per Bulan',
             'uang_masuk'    => $uang
         ], 200);
     }
@@ -181,11 +183,16 @@ class TransaksiController extends Controller
 
     public function getTransaksi()
     {
-        $transaksi = Transaksi::orderBy('id_transaksi', 'DESC')->get();
+        $transaksi = DB::table('transaksis')
+        ->join('santris', 'transaksis.nis', '=', 'santris.nis')
+        ->select('transaksis.id_transaksi', 'transaksis.tanggal_transaksi', 
+        'santris.nama_santri', 'transaksis.total_bayar', 'transaksis.status_transaksi')
+        ->orderBy('transaksis.id_transaksi', 'desc')
+        ->get();
 
         return response()->json(array(
             'message' => 'Riwayat Transaksi Berhasil Ditampilkan',
-            'transaksi' => $transaksi->toArray()),
+            'transaksi' => $transaksi),
             200
         );
     }
@@ -195,9 +202,9 @@ class TransaksiController extends Controller
         $transaksi = DB::table('transaksis')
             ->join('admins', 'transaksis.id_admin', '=', 'admins.id_admin')
             ->select('transaksis.id_transaksi', 'transaksis.tanggal_transaksi', 'transaksis.bulan', 
-            'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf')
-            ->where('nis', $nis)
+            'transaksis.spp', 'transaksis.infaq', 'transaksis.total_bayar', 'admins.paraf', 'transaksis.status_transaksi')
             ->orderBy('transaksis.id_transaksi', 'desc')
+            ->where('nis', $nis)
             ->get();
 
         return response()->json(array(

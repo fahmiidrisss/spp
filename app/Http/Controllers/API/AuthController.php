@@ -40,6 +40,7 @@ class AuthController extends Controller
                     'santri',
                     'input_transaksi',
                     'riwayat_transaksi',
+                    'approval',
                     'laporan'
                 ]
             ], 200);
@@ -54,7 +55,9 @@ class AuthController extends Controller
                 'role'      => $user->role,
                 'list_menu' => [
                     'dashboard',
-                    'input_transaksi'
+                    'input_transaksi',
+                    'riwayat_transaksi',
+                    'approval'
                     ]
             ], 200);
         }

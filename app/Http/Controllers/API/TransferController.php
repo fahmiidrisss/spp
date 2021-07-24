@@ -11,6 +11,7 @@ use App\Models\Transfer;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 use Validator;
+use Illuminate\Support\Facades\DB;
 use Storage;
 
 class TransferController extends Controller
@@ -88,11 +89,16 @@ class TransferController extends Controller
 
     public function getTransfer()
     {
-        $transfer = Transfer::all();
+        $transfer = DB::table('transfers')
+        ->join('santris', 'transfers.nis', '=', 'santris.nis')
+        ->select('transfers.id_transfer', 'transfers.tanggal_transfer', 'santris.nama_santri', 
+        'transfers.total_transfer', 'transfers.status_transfer', 'transfers.path_gambar')
+        ->orderBy('transfers.id_transfer', 'desc')
+        ->get();
 
         return response()->json(array(
             'message' => 'Riwayat Transfer Berhasil Ditampilkan',
-            'transfer' => $transfer->toArray()),
+            'transfer' => $transfer),
             200
         );
     }
