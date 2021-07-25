@@ -91,8 +91,9 @@ class TransferController extends Controller
     {
         $transfer = DB::table('transfers')
         ->join('santris', 'transfers.nis', '=', 'santris.nis')
+        ->join('kodes', 'transfers.id_kode', '=', 'kodes.id_kode')
         ->select('transfers.id_transfer', 'transfers.tanggal_transfer', 'santris.nama_santri', 
-        'transfers.total_transfer', 'transfers.status_transfer', 'transfers.path_gambar')
+        'transfers.total_transfer', 'kodes.kode_unik', 'transfers.status_transfer', 'transfers.path_gambar')
         ->orderBy('transfers.id_transfer', 'desc')
         ->get();
 
@@ -155,7 +156,7 @@ class TransferController extends Controller
             'total_bayar'       => $total_transaksi,
             'status_transaksi'  => $transaksi->status_transaksi,
             'tanggal_transaksi' => $transaksi->tanggal_transaksi,
-            'admin'             => $transaksi->id_admin
+            'id_admin'          => $transaksi->id_admin
         ], 200);
     }
 
