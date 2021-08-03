@@ -63,7 +63,7 @@ Route::get('/transaksi/santri/tunggakan', [TransaksiController::class, 'getSantr
 Route::get('/transaksi', [TransaksiController::class, 'getTransaksi']);
 Route::get('/transaksi/riwayat/{nis}', [TransaksiController::class, 'getTransaksiSantri']);
 Route::get('/transaksi/kartu/{nis}', [TransaksiController::class, 'getKartuSantri']);
-Route::post('/tes', [TransaksiController::class, 'tesTahun']);
+Route::post('/', [TransaksiController::class, 'tesTahun']);
 
 //Transfer
 Route::get('/transfer/kodeunik', [TransferController::class, 'getKode']);
@@ -72,6 +72,7 @@ Route::get('/transfer', [TransferController::class, 'getTransfer']);
 Route::delete('/transfer/{id}', [TransferController::class, 'deleteTransfer']);
 Route::post('/transfer/upload/gambar', [TransferController::class, 'uploadGambar']);
 Route::put('/transfer', [TransferController::class, 'updateTransfer']);
+Route::get('/transfer/{nis}', [TransferController::class, 'getStatusTransfer']);
 
 //Laporan
 Route::get('/laporan/uang/{bulan}', [LaporanController::class, 'getLaporanUangMasuk']);

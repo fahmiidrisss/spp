@@ -75,7 +75,7 @@ class TransferController extends Controller
         $transfer->total_transfer = 50000*$request->jumlah_bulan;
         $transfer->spp = ($transfer->total_transfer/100)*70;
         $transfer->infaq = ($transfer->total_transfer/100)*30;
-        $transfer->status_transfer = "Transfer";
+        $transfer->status_transfer = "Belum Upload";
         $transfer->id_kode = $kode_transfer->id_kode;
         $transfer->tanggal_transfer = $tanggal_sekarang;
         $transfer->save();
@@ -106,7 +106,8 @@ class TransferController extends Controller
 
     public function deleteTransfer(Request $request, $id)
     {
-        $waktu = Carbon::now();
+        date_default_timezone_set("Asia/Jakarta");
+        $tanggal_sekarang = date("Y-m-d", strtotime("now"));
         $transfer = Transfer::find($id);
         $transaksi = $transfer;
         $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
@@ -139,7 +140,7 @@ class TransferController extends Controller
             $transaksi->id_tahun = $tahun;
             $transaksi->status_transaksi = "Transfer";
             $transaksi->id_admin = $request->id_admin;
-            $transaksi->tanggal_transaksi = $transfer->tanggal_transfer;
+            $transaksi->tanggal_transaksi = $tanggal_sekarang;
             $transaksi->save();
         }
 
@@ -198,11 +199,34 @@ class TransferController extends Controller
 
         $transfer = Transfer::where('id_kode', $kode_unik->id_kode)->first();
         $transfer->update([
-            'gambar'        => $request->image_name,
-            'path_gambar'   => $request->image_url
+            'status_transfer'   => "Menunggu Persetujuan Admin",
+            'gambar'            => $request->image_name,
+            'path_gambar'       => $request->image_url
         ]);
         return response()->json([
             'message'  => "Gambar Telah Tersimpan"
         ], 200);
+    }
+
+    public function getStatusTransfer($nis)
+    {
+        $status = Transfer::where('nis', $nis)->first();
+
+        if($status == null)
+        {
+            return response()->json([
+                'message'  => "Tidak Ada Transaksi Yang Menunggu Persetujuan"
+            ], 200);
+        } else if($status != null && $status->status_transfer == "Belum Upload")
+        {
+            return response()->json([
+                'message'  => "Silahkan Upload Bukti Transfer Terlebih Dahulu"
+            ], 200);
+        } else if($status != null && $status->status_transfer == "Menunggu Persetujuan Admin")
+        {
+            return response()->json([
+                'message'  => "Sedang Menunggu Persetujuan Admin"
+            ], 200);
+        }
     }
 }

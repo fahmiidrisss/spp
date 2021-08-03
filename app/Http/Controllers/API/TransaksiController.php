@@ -160,7 +160,7 @@ class TransaksiController extends Controller
     public function getSantriBayar()
     {
         $waktu = Carbon::now();
-        $santri = Transaksi::whereMonth('tanggal_transaksi', $waktu->month)
+        $santri = Transaksi::where('bulan', $waktu->month)
             ->groupBy('nis')
             ->select('nis', DB::raw('count(nis) as total'))
             ->get();
