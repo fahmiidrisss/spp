@@ -69,10 +69,13 @@ Route::post('/', [TransaksiController::class, 'tesTahun']);
 Route::get('/transfer/kodeunik', [TransferController::class, 'getKode']);
 Route::post('/transfer', [TransferController::class, 'createTransfer']);
 Route::get('/transfer', [TransferController::class, 'getTransfer']);
+Route::get('/transfer/failed', [TransferController::class, 'getFailedTransfer']);
 Route::delete('/transfer/{id}', [TransferController::class, 'deleteTransfer']);
 Route::post('/transfer/upload/gambar', [TransferController::class, 'uploadGambar']);
 Route::put('/transfer', [TransferController::class, 'updateTransfer']);
 Route::get('/transfer/{nis}', [TransferController::class, 'getStatusTransfer']);
+Route::put('/transfer/{id}', [TransferController::class, 'failedTransfer']);
+
 
 //Laporan
 Route::get('/laporan/uang/{bulan}', [LaporanController::class, 'getLaporanUangMasuk']);

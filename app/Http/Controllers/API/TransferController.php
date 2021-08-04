@@ -211,22 +211,85 @@ class TransferController extends Controller
     public function getStatusTransfer($nis)
     {
         $status = Transfer::where('nis', $nis)->first();
+        $transaksi = Transaksi::where('nis', $nis)->orderBy('id_transaksi', 'desc')->first();
+        $total_bulan = $status->total_transfer/50000;
+        $bulan = [];
+
+
+        if($transaksi == null)
+        {
+            for($i = 0; $i < $total_bulan; $i++)
+            {
+                $temp = [
+                    'bulan' => 7+$i
+                ];
+                array_push($bulan, $temp);
+            }
+        } else if($transaksi != null)
+        {
+            for($i = 1; $i <= $total_bulan; $i++)
+            {
+                $temp = [
+                    'bulan' => $transaksi->bulan+$i
+                ];
+                array_push($bulan, $temp);
+            }
+        }
 
         if($status == null)
         {
             return response()->json([
-                'message'  => "Tidak Ada Transaksi Yang Menunggu Persetujuan"
+                'message'   => "Tidak Ada Transaksi Yang Menunggu Persetujuan"
             ], 200);
         } else if($status != null && $status->status_transfer == "Belum Upload")
         {
             return response()->json([
-                'message'  => "Silahkan Upload Bukti Transfer Terlebih Dahulu"
+                'message'  => "Silahkan Upload Bukti Transfer Terlebih Dahulu",
+                'bulan'     => $bulan
             ], 200);
         } else if($status != null && $status->status_transfer == "Menunggu Persetujuan Admin")
         {
             return response()->json([
-                'message'  => "Sedang Menunggu Persetujuan Admin"
+                'message'  => "Sedang Menunggu Persetujuan Admin",
+                'bulan'     => $bulan
+            ], 200);
+        } else if($status != null && $status->status_transfer == "Gagal Verifikasi")
+        {
+            return response()->json([
+                'message'  => "Transfer Tidak Valid, Silahkan Hubungi Admin",
+                'bulan'     => $bulan
             ], 200);
         }
+    }
+
+    public function failedTransfer($id)
+    {
+        $transfer = Transfer::where('id_transfer', $id)->first();
+
+        $transfer->update([
+            'status_transfer'  => "Gagal Verifikasi"
+        ]);
+
+        return response()->json([
+            'message'  => "Transfer Tidak Valid, Silahkan Hubungi Admin"
+        ], 200);
+    }
+
+    public function getFailedTransfer()
+    {
+        $transfer = Transfer::where('status_transfer', '=', "Gagal Verifikasi")->get();
+
+        if($transfer == null)
+        {
+            return response()->json([
+                'message'  => "Tidak Ada Riwayat Untuk Ditampilkan",
+                'transfer' => $transfer
+            ], 200);
+        }
+
+        return response()->json([
+            'message'  => "Riwayat Transfer Gagal",
+            'transfer' => $transfer
+        ], 200);
     }
 }
