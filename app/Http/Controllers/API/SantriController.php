@@ -197,4 +197,14 @@ class SantriController extends Controller
             'message'   => 'Password Santri Berhasil Diubah'
         ], 200);
     }
+
+    public function searchSantri($nama)
+    {
+        $santri = Santri::where('nama_santri', 'like', '%'.$nama.'%')->get();
+
+        return response()->json([
+            'message'   => 'Hasil Pencarian',
+            'santri'    => $santri
+        ], 200);
+    }
 }

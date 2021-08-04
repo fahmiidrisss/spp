@@ -47,6 +47,7 @@ Route::delete('/admin/{id}', [AdminController::class, 'deleteAdmin']);
 //Kelola Data Santri
 Route::post('/santri', [SantriController::class, 'createSantri']);
 Route::get('/santri', [SantriController::class, 'getSantri']);
+Route::get('/santri/cari/{nama}', [SantriController::class, 'searchSantri']);
 Route::get('/santri/{nis}', [SantriController::class, 'detailSantri']);
 Route::put('/santri/{nis}', [SantriController::class, 'updateSantri']);
 Route::delete('/santri/{nis}', [SantriController::class, 'deleteSantri']);
