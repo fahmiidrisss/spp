@@ -6,7 +6,6 @@ use App\Models\Santri;
 use App\Models\User;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Illuminate\Support\Facades\Hash;
 
 class SantrisImport implements ToModel
 {
@@ -17,13 +16,6 @@ class SantrisImport implements ToModel
     */
     public function model(array $row)
     {
-        // $user = new User([
-        //     'username'      => $row[0],
-        //     'role'          => "Santri",
-        //     'password'      => Hash::make($row[0]."123"),
-        // ]);
-        // $user->save();
-
         return new Santri([
             'nis'           => $row[0],
             'nama_santri'   => $row[1],

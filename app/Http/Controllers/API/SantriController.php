@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SantrisImport;
+use App\Imports\UsersImport;
 
 class SantriController extends Controller
 {
@@ -213,9 +214,19 @@ class SantriController extends Controller
     public function createSantriExcel(Request $request)
     {
         Excel::import(new SantrisImport, $request->file('file')->store('temp'));
+        Excel::import(new UsersImport, $request->file('file')->store('temp'));
+        
         // return back();
 
         $santri = Santri::where('id_user', null)->get();
+        $jumlah = count($santri);
+        for($i = 0; $i < $jumlah; $i++)
+        {
+            $user = User::where('username', $santri[$i]->nis)->first();
+            $id = Santri::where('nis', $santri[$i]->nis)->first();
+            $id->id_user = $user->id_user;
+            $id->save();
+        }
 
         return response()->json([
             'message'   => 'Upload Data Santri Berhasil',
