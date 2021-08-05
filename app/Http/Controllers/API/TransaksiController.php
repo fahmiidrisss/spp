@@ -258,4 +258,21 @@ class TransaksiController extends Controller
             'max'   => $maks_transaksi
         ], 200);
     }
+
+    public function getPersentaseSantri()
+    {
+        $waktu = Carbon::now();
+        $lunas = Transaksi::where('bulan', $waktu->month)
+            ->groupBy('nis')
+            ->select('nis', DB::raw('count(nis) as total'))
+            ->get();
+
+        $tunggakan = Santri::where('jumlah_tunggakan', '>', 0)->get();
+        
+        return response()->json([
+            'message'       => 'Jumlah Santri yang Bayar Bulan Ini',
+            'lunas'         => count($lunas),
+            'tunggakan'     => count($tunggakan)
+        ], 200);
+    }
 }

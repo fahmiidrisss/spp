@@ -9,6 +9,8 @@ use App\Models\Santri;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\SantrisImport;
 
 class SantriController extends Controller
 {
@@ -204,6 +206,19 @@ class SantriController extends Controller
 
         return response()->json([
             'message'   => 'Hasil Pencarian',
+            'santri'    => $santri
+        ], 200);
+    }
+
+    public function createSantriExcel(Request $request)
+    {
+        Excel::import(new SantrisImport, $request->file('file')->store('temp'));
+        // return back();
+
+        $santri = Santri::where('id_user', null)->get();
+
+        return response()->json([
+            'message'   => 'Upload Data Santri Berhasil',
             'santri'    => $santri
         ], 200);
     }

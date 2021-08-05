@@ -277,7 +277,14 @@ class TransferController extends Controller
 
     public function getFailedTransfer()
     {
-        $transfer = Transfer::where('status_transfer', '=', "Gagal Verifikasi")->get();
+        $transfer = DB::table('transfers')
+        ->join('santris', 'transfers.nis', '=', 'santris.nis')
+        ->join('kodes', 'transfers.id_kode', '=', 'kodes.id_kode')
+        ->select('transfers.id_transfer', 'transfers.tanggal_transfer', 'santris.nama_santri', 
+        'transfers.total_transfer', 'kodes.kode_unik', 'transfers.status_transfer', 'transfers.path_gambar')
+        ->where('status_transfer', '=', "Gagal Verifikasi")
+        ->orderBy('transfers.id_transfer', 'desc')
+        ->get();
 
         if($transfer == null)
         {

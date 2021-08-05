@@ -46,6 +46,7 @@ Route::delete('/admin/{id}', [AdminController::class, 'deleteAdmin']);
 
 //Kelola Data Santri
 Route::post('/santri', [SantriController::class, 'createSantri']);
+Route::post('/santri/excel', [SantriController::class, 'createSantriExcel']);
 Route::get('/santri', [SantriController::class, 'getSantri']);
 Route::get('/santri/cari/{nama}', [SantriController::class, 'searchSantri']);
 Route::get('/santri/{nis}', [SantriController::class, 'detailSantri']);
@@ -61,6 +62,7 @@ Route::get('/transaksi/total/bulanan', [TransaksiController::class, 'getTotalBul
 Route::get('/transaksi/total/harian', [TransaksiController::class, 'getTotalHarian']);
 Route::get('/transaksi/santri/bayar', [TransaksiController::class, 'getSantriBayar']);
 Route::get('/transaksi/santri/tunggakan', [TransaksiController::class, 'getSantriTunggakan']);
+Route::get('/transaksi/santri/persentase', [TransaksiController::class, 'getPersentaseSantri']);
 Route::get('/transaksi', [TransaksiController::class, 'getTransaksi']);
 Route::get('/transaksi/riwayat/{nis}', [TransaksiController::class, 'getTransaksiSantri']);
 Route::get('/transaksi/kartu/{nis}', [TransaksiController::class, 'getKartuSantri']);
