@@ -27,6 +27,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('reset:daily')
         ->daily();
+        $schedule->command('increment:monthly')
+        ->daily();
     }
 
     /**

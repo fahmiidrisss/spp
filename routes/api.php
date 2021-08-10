@@ -57,6 +57,7 @@ Route::put('/santri/password/{nis}', [SantriController::class, 'updatePassword']
 
 //Transaksi
 Route::post('/transaksi', [TransaksiController::class, 'createTransaksi']);
+Route::post('/transaksi/nominal', [TransaksiController::class, 'setNominal']);
 Route::get('/transaksi/uang/bulanan', [TransaksiController::class, 'getUangBulanan']);
 Route::get('/transaksi/total/bulanan', [TransaksiController::class, 'getTotalBulanan']);
 Route::get('/transaksi/total/harian', [TransaksiController::class, 'getTotalHarian']);

@@ -275,4 +275,37 @@ class TransaksiController extends Controller
             'tunggakan'     => count($tunggakan)
         ], 200);
     }
+
+    public function setNominal(Request $request)
+    {
+        $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+
+        $request->validate([
+            'tahun_ajaran'  => 'required',
+            'nominal_spp'   => 'required',
+            'uang_spp'      => 'required',
+            'uang_infaq'    => 'required'    
+        ]);
+
+        $cekTahun = Tahunajaran::where('tahun_ajaran', $request->tahun_ajaran)->first();
+        if($cekTahun != null)
+        {
+            return response()->json([
+                'message' => 'Tahun Pelajaran Telah Terdaftar, Masukkan Tahun Lain'
+            ], 400);
+        }
+
+        $nominal = new Tahunajaran();
+        $nominal->id_tahun = $tahunAjaran->id_tahun+1;
+        $nominal->jumlah_bulan = 12;
+        $nominal->tahun_ajaran = $request->tahun_ajaran;
+        $nominal->nominal_spp = $request->nominal_spp;
+        $nominal->uang_spp = $request->uang_spp;
+        $nominal->uang_infaq = $request->uang_infaq;
+        $nominal->save();
+
+        return response()->json([
+            'message' => 'Nominal SPP Tahun '.$request->tahun_ajaran.' Berhasil Terdaftar'
+        ], 200);
+    }
 }
