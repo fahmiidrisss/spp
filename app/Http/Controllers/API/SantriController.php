@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Santri;
 use App\Models\User;
+use App\Models\Alumni;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SantrisImport;
 use App\Imports\UsersImport;
+use Carbon\Carbon;
 
 class SantriController extends Controller
 {
@@ -123,7 +125,22 @@ class SantriController extends Controller
 
     public function deleteSantri($nis)
     {
+        $waktu = Carbon::now();
         $santri = Santri::find($nis);
+        $alumni = new Alumni();
+        $alumni->nis = $santri->nis;
+        $alumni->nama_santri = $santri->nama_santri;
+        $alumni->tanggal_lahir = $santri->tanggal_lahir;
+        $alumni->alamat = $santri->alamat;
+        $alumni->no_hp = $santri->no_hp;
+        $alumni->jenis_kelamin = $santri->jenis_kelamin;
+        $alumni->nama_wali = $santri->nama_wali;
+        $alumni->subsidi = $santri->subsidi;
+        $alumni->jumlah_tunggakan = $santri->jumlah_tunggakan;
+        $alumni->id_kelas = $santri->id_kelas;
+        $alumni->tahun_keluar = $waktu->year;
+        $alumni->save();
+
         $user = User::where('username', $santri->nis)->delete();
         $santri->delete();
 

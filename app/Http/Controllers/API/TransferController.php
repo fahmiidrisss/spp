@@ -150,9 +150,10 @@ class TransferController extends Controller
         $tanggal_sekarang = date("Y-m-d", strtotime("now"));
         $transfer = Transfer::find($id);
         $transaksi = $transfer;
-        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        $last_transaction = Transaksi::where('nis', $transfer->nis)->orderBy('id_transaksi', 'desc')->first();
+        $tahun_ajaran = Tahunajaran::where('id_tahun', $last_transaction->id_tahun)->first();
 
-        $jumlah_bulan = ($transfer->total_transfer/50000);
+        $jumlah_bulan = ($transfer->total_transfer/$tahun_ajaran->nominal_spp);
 
         for($i = 0; $i < $jumlah_bulan; $i++)
         {
@@ -173,9 +174,9 @@ class TransferController extends Controller
 
             $transaksi = new Transaksi();
             $transaksi->nis = $transfer->nis;
-            $transaksi->total_bayar = 50000;
-            $transaksi->spp = 35000;
-            $transaksi->infaq = 15000;
+            $transaksi->total_bayar = $tahun_ajaran->nominal_spp;
+            $transaksi->spp = $tahun_ajaran->uang_spp;
+            $transaksi->infaq = $tahun_ajaran->uang_infaq;
             $transaksi->bulan = $bulan;
             $transaksi->id_tahun = $tahun;
             $transaksi->status_transaksi = "Transfer";
@@ -187,7 +188,7 @@ class TransferController extends Controller
         $santri = Santri::where('nis', $transfer->nis)->first();
         $tunggakan = $santri->jumlah_tunggakan-$jumlah_bulan;
         $santri->update(['jumlah_tunggakan' => $tunggakan]);
-        $total_transaksi = 50000*$jumlah_bulan;
+        $total_transaksi = $tahun_ajaran->nominal_spp*$jumlah_bulan;
         $transfer = Transfer::find($id)->delete();
 
         return response()->json([
