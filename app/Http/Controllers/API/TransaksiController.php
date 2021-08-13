@@ -24,9 +24,7 @@ class TransaksiController extends Controller
     public function createTransaksi(Request $request)
     {
         date_default_timezone_set("Asia/Jakarta");
-        $tanggal_sekarang = date("Y-m-d", strtotime("now"));
-        $waktu_sekarang = date("Y-m-d H:i", strtotime("now"));
-        $waktu = Carbon::now();
+        $tanggalSekarang = date("Y-m-d", strtotime("now"));
 
         $request->validate([
             'nis'               => 'required',
@@ -45,24 +43,23 @@ class TransaksiController extends Controller
             ], 404);
         }
         
-        $maks_bayar = Tahunajaran::sum('jumlah_bulan');
+        $maksBayar = Tahunajaran::sum('jumlah_bulan');
         $transaksi = Transaksi::where('nis', $request->nis)->get();
-        $total_transaksi = count($transaksi);
-        $maks_transaksi = $maks_bayar-$total_transaksi;
-        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        $totalTransaksi = count($transaksi);
+        $maksTransaksi = $maksBayar-$totalTransaksi;
 
-        if($maks_bayar == $total_transaksi)
+        if($maksBayar == $totalTransaksi)
         {
             return response()->json([
                 'message'   => 'SPP Anda Tahun Ini Sudah Lunas, Tunggu Tahun Ajaran Berikutnya'
-            ], 200);    
+            ], 400);    
         } 
 
-        if($request->jumlah_bulan > $maks_transaksi)
+        if($request->jumlah_bulan > $maksTransaksi)
         {
             return response()->json([
-                'message'   => 'Anda Hanya Bisa Membayar SPP Maksimal sebanyak '.$maks_transaksi.' Bulan, Silahkan Input Ulang',
-            ], 200); 
+                'message'   => 'Anda Hanya Bisa Membayar SPP Maksimal sebanyak '.$maksTransaksi.' Bulan, Silahkan Input Ulang'
+            ], 400); 
         }
 
         for($i = 0; $i < $request->jumlah_bulan; $i++)
@@ -71,27 +68,46 @@ class TransaksiController extends Controller
             if($transaksi == null)
             {
                 $bulan = env("AWAL_BULAN_AJARAN", 7);
-                $tahun = $tahun_ajaran->id_tahun;
-            } else if($transaksi != null && $transaksi->bulan < 12 )
+                $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->first();
+                $tahun = $tahunAjaran->id_tahun;
+            } else if($transaksi != null && $transaksi->bulan < 12)
             {
                 $bulan = $transaksi->bulan+1;
-                $tahun = $tahun_ajaran->id_tahun;
+                $transaksiSetahun = Transaksi::where('id_tahun', $transaksi->id_tahun)->get();
+                $totalSetahun = count($transaksiSetahun);
+                if($totalSetahun < 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('id_tahun', $transaksi->id_tahun)->first(); 
+                } else if($totalSetahun == 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+                }
+                $tahun = $tahunAjaran->id_tahun;
             } else if($transaksi != null && $transaksi->bulan >= 12)
             {
-                    $bulan = 1;
-                    $tahun = $tahun_ajaran->id_tahun;
+                $bulan = 1;
+                $transaksiSetahun = Transaksi::where('id_tahun', $transaksi->id_tahun)->get();
+                $totalSetahun = count($transaksiSetahun);
+                if($totalSetahun < 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('id_tahun', $transaksi->id_tahun)->first(); 
+                } else if($totalSetahun == 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+                }
+                $tahun = $tahunAjaran->id_tahun;
             }
 
             $transaksi = new Transaksi();
             $transaksi->nis = $request->nis;
-            $transaksi->total_bayar = 50000;
-            $transaksi->spp = 35000;
-            $transaksi->infaq = 15000;
+            $transaksi->total_bayar = $tahunAjaran->nominal_spp;
+            $transaksi->spp = $tahunAjaran->uang_spp;
+            $transaksi->infaq = $tahunAjaran->uang_infaq;
             $transaksi->bulan = $bulan;
             $transaksi->id_tahun = $tahun;
             $transaksi->status_transaksi = "Tunai";
             $transaksi->id_admin = $request->id_admin;
-            $transaksi->tanggal_transaksi = $tanggal_sekarang;
+            $transaksi->tanggal_transaksi = $tanggalSekarang;
             $transaksi->save();
             // dd($transaksi);
         }
@@ -116,7 +132,7 @@ class TransaksiController extends Controller
     public function getUangBulanan()
     {
         $waktu = Carbon::now();
-        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        $tahun_ajaran = Tahunajaran::where('tahun_ajaran', $waktu->year)->first();
         $uang = Transaksi::selectRaw('bulan, sum(total_bayar) as total')
             ->groupBy('bulan')
             ->where('id_tahun', $tahun_ajaran->id_tahun)
@@ -216,7 +232,8 @@ class TransaksiController extends Controller
 
     public function getKartuSantri($nis)
     {
-        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        $waktu = Carbon::now(); 
+        $tahun_ajaran = Tahunajaran::where('tahun_ajaran', $waktu->year)->first();
         
         $transaksi = DB::table('transaksis')
             ->join('admins', 'transaksis.id_admin', '=', 'admins.id_admin')
@@ -290,9 +307,17 @@ class TransaksiController extends Controller
         $cekTahun = Tahunajaran::where('tahun_ajaran', $request->tahun_ajaran)->first();
         if($cekTahun != null)
         {
+            $nominal = Tahunajaran::where('tahun_ajaran', '=', $request->tahun_ajaran)->first();
+            $nominal->jumlah_bulan = 12;
+            $nominal->tahun_ajaran = $request->tahun_ajaran;
+            $nominal->nominal_spp = $request->nominal_spp;
+            $nominal->uang_spp = $request->uang_spp;
+            $nominal->uang_infaq = $request->uang_infaq;
+            $nominal->save();
+
             return response()->json([
-                'message' => 'Tahun Pelajaran Telah Terdaftar, Masukkan Tahun Lain'
-            ], 400);
+                'message' => 'Nominal SPP Tahun '.$request->tahun_ajaran.' Berhasil Diubah'
+            ], 200);
         }
 
         $nominal = new Tahunajaran();
@@ -307,5 +332,95 @@ class TransaksiController extends Controller
         return response()->json([
             'message' => 'Nominal SPP Tahun '.$request->tahun_ajaran.' Berhasil Terdaftar'
         ], 200);
+    }
+
+    public function getNominal(Request $request)
+    {
+        $request->validate([
+            'nis'               => 'required',
+            'jumlah_bulan'      => 'required',
+        ]);
+
+        $total_bayar = 0;
+        $spp = 0;
+        $infaq = 0;
+
+        $santri = Santri::where('nis', $request->nis)->first();
+        if(!$santri)
+        {
+            return response()->json([
+                'message' => 'NIS tidak terdaftar'
+            ], 404);
+        }
+        
+        $maksBayar = Tahunajaran::sum('jumlah_bulan');
+        $transaksi = Transaksi::where('nis', $request->nis)->get();
+        $totalTransaksi = count($transaksi);
+        $maksTransaksi = $maksBayar-$totalTransaksi;
+
+        if($maksBayar == $totalTransaksi)
+        {
+            return response()->json([
+                'message'   => 'SPP Anda Tahun Ini Sudah Lunas, Tunggu Tahun Ajaran Berikutnya'
+            ], 400);    
+        } 
+
+        if($request->jumlah_bulan > $maksTransaksi)
+        {
+            return response()->json([
+                'message'   => 'Anda Hanya Bisa Membayar SPP Maksimal sebanyak '.$maksTransaksi.' Bulan, Silahkan Input Ulang'
+            ], 400); 
+        }
+
+        for($i = 0; $i < $request->jumlah_bulan; $i++)
+        {
+            $transaksi = Transaksi::where('nis', $request->nis)->orderBy('id_transaksi', 'desc')->first();
+            if($transaksi == null)
+            {
+                $bulan = env("AWAL_BULAN_AJARAN", 7);
+                $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->first();
+                $tahun = $tahunAjaran->id_tahun;
+            } else if($transaksi != null && $transaksi->bulan < 12)
+            {
+                $bulan = $transaksi->bulan+1;
+                $transaksiSetahun = Transaksi::where('id_tahun', $transaksi->id_tahun)->get();
+                $totalSetahun = count($transaksiSetahun);
+                if($totalSetahun < 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('id_tahun', $transaksi->id_tahun)->first(); 
+                } else if($totalSetahun == 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+                }
+                $tahun = $tahunAjaran->id_tahun;
+            } else if($transaksi != null && $transaksi->bulan >= 12)
+            {
+                $bulan = 1;
+                $transaksiSetahun = Transaksi::where('id_tahun', $transaksi->id_tahun)->get();
+                $totalSetahun = count($transaksiSetahun);
+                if($totalSetahun < 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('id_tahun', $transaksi->id_tahun)->first(); 
+                } else if($totalSetahun == 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+                }
+                $tahun = $tahunAjaran->id_tahun;
+            }
+
+            // $transaksi = new Transaksi();
+            $nis = $request->nis;
+            $total_bayar = $total_bayar+$tahunAjaran->nominal_spp;
+            $spp = $spp+$tahunAjaran->uang_spp;
+            $infaq = $infaq+$tahunAjaran->uang_infaq;
+            // dd($transaksi);
+        }
+
+        return response()->json([
+            'message'       => 'Total Bayar',
+            'total_bayar'   => $total_bayar,
+            'spp'           => $spp,
+            'infaq'         => $infaq
+        ], 200);        
     }
 }

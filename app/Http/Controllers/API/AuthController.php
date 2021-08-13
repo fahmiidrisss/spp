@@ -85,13 +85,13 @@ class AuthController extends Controller
             $admin = Admin::where('username', $request->username)->first();
             return response()->json([
                 'message'   => 'Unauthorized'
-            ], 200);
+            ], 404);
         } else if($user->role == 'Operator') 
         {
             $admin = Admin::where('username', $request->username)->first();
             return response()->json([
                 'message'   => 'Unauthorized'
-            ], 200);
+            ], 404);
         }
         
         return response()->json([

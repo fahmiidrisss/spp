@@ -27,9 +27,7 @@ class TransferController extends Controller
     public function createTransfer(Request $request)
     {
         date_default_timezone_set("Asia/Jakarta");
-        $jam_sekarang = date("H:i", strtotime("now"));
         $tanggal_sekarang = date("Y-m-d", strtotime("now"));
-        $waktu_sekarang = date("Y-m-d H:i", strtotime("now"));
 
         $request->validate([
             'nis'               => 'required',
@@ -51,7 +49,9 @@ class TransferController extends Controller
         $transaksi = Transaksi::where('nis', $request->nis)->get();
         $total_transaksi = count($transaksi);
         $maks_transaksi = $maks_bayar-$total_transaksi;
-        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        $total_bayar = 0;
+        $spp = 0;
+        $infaq = 0;
 
         if($maks_bayar == $total_transaksi)
         {
@@ -69,12 +69,52 @@ class TransferController extends Controller
 
         $kode_transfer = self::getKode();
 
+        for($i = 0; $i < $request->jumlah_bulan; $i++)
+        {
+            $transaksi = Transaksi::where('nis', $request->nis)->orderBy('id_transaksi', 'desc')->first();
+            // $bulan = $transaksi->bulan+$i;
+            if($transaksi == null)
+            {
+                $bulan = env("AWAL_BULAN_AJARAN", 7);
+                $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->first();
+                $tahun = $tahunAjaran->id_tahun;
+            } else if($transaksi != null && $transaksi->bulan < 12)
+            {
+                $bulan = $transaksi->bulan+1;
+                $transaksiSetahun = Transaksi::where('id_tahun', $transaksi->id_tahun)->get();
+                $totalSetahun = count($transaksiSetahun)+$i;
+                if($totalSetahun < 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('id_tahun', $transaksi->id_tahun)->first(); 
+                } else if($totalSetahun == 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+                }
+                $tahun = $tahunAjaran->id_tahun;
+            } else if($transaksi != null && $transaksi->bulan >= 12)
+            {
+                $bulan = 1;
+                $transaksiSetahun = Transaksi::where('id_tahun', $transaksi->id_tahun)->get();
+                $totalSetahun = count($transaksiSetahun);
+                if($totalSetahun < 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('id_tahun', $transaksi->id_tahun)->first(); 
+                } else if($totalSetahun == 12)
+                {
+                    $tahunAjaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+                }
+                $tahun = $tahunAjaran->id_tahun;
+            }
+            $total_bayar = $total_bayar+$tahunAjaran->nominal_spp;
+            $spp = $spp+$tahunAjaran->uang_spp;
+            $infaq = $infaq+$tahunAjaran->uang_infaq;
+        }
         // dd($request->all());
         $transfer = new Transfer();
         $transfer->nis = $request->nis;
-        $transfer->total_transfer = 50000*$request->jumlah_bulan;
-        $transfer->spp = ($transfer->total_transfer/100)*70;
-        $transfer->infaq = ($transfer->total_transfer/100)*30;
+        $transfer->total_transfer = $total_bayar;
+        $transfer->spp = $spp;
+        $transfer->infaq = $infaq;
         $transfer->status_transfer = "Belum Upload";
         $transfer->id_kode = $kode_transfer->id_kode;
         $transfer->tanggal_transfer = $tanggal_sekarang;

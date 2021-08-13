@@ -203,12 +203,24 @@ class SantriController extends Controller
 
     public function searchSantri($nama)
     {
-        $santri = Santri::where('nama_santri', 'like', '%'.$nama.'%')->get();
-
-        return response()->json([
-            'message'   => 'Hasil Pencarian',
-            'santri'    => $santri
-        ], 200);
+        $santri = DB::table('santris')
+            ->join('kelas', 'santris.id_kelas', '=', 'kelas.id_kelas')
+            ->select('santris.nis', 'santris.nama_santri', 'kelas.nama_kelas', 'santris.subsidi', 'santris.jumlah_tunggakan')
+            ->where('nama_santri', 'like', '%'.$nama.'%')
+            ->get();
+        
+        if($santri == null)
+        {
+            return response()->json([
+                'message'   => 'Santri Tidak Ditemukan'
+            ], 404);
+        } else if($santri != null)
+        {
+            return response()->json([
+                'message'   => 'Hasil Pencarian',
+                'santri'    => $santri
+            ], 200);
+        }
     }
 
     public function createSantriExcel(Request $request)

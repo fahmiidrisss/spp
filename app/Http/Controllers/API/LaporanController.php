@@ -20,7 +20,7 @@ class LaporanController extends Controller
     public function getLaporanUangMasuk($bulan)
     {
         $waktu = Carbon::now();
-        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        $tahun_ajaran = Tahunajaran::where('tahun_ajaran', $waktu->year)->first();
 
         $transaksi = DB::table('transaksis')
             ->join('santris', 'transaksis.nis', '=', 'santris.nis')
@@ -81,8 +81,8 @@ class LaporanController extends Controller
 
     public function unduhLaporanUangMasuk($bulan)
     {
-        $tanggal = Carbon::now();
-        $tahun_ajaran = Tahunajaran::where('jumlah_bulan', '=', 12)->orderBy('id_tahun', 'desc')->first();
+        $waktu = Carbon::now();
+        $tahun_ajaran = Tahunajaran::where('tahun_ajaran', '=', $waktu->year)->first();
         $namaBulan = [
             '0' => null, 
             '1' => 'Januari',
